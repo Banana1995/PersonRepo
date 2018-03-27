@@ -11,7 +11,6 @@ public class MultiThread {
 
     private LinkedBlockingQueue<String> queue;
 
-
     /**
      * 模仿用户获取序列号方法 往队列中放入数据
      *
