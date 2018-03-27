@@ -119,3 +119,33 @@ git config --global user.email "123abc@163.com"
 
 4. **idea使用Git时，需要配置ssh**
 
+   - **设置私钥地址**
+
+   ![](C:\Users\banana\Pictures\微信截图_20180327233928.png)
+
+   ​
+
+   - **设置Git地址和SSH executable 为Native**
+
+   ![](C:\Users\banana\Pictures\微信截图_20180327234038.png)
+
+   - **设置github地址**
+
+     ![](C:\Users\banana\Pictures\微信截图_20180327234303.png)
+
+5. **对于重命名改名字等操作都可以在本地，修改完后添加进版本控制再push到远端仓库即可**
+
+6. 对于在第2步中修改了本地远端的名称的操作，如果在idea中拉取代码的话，回报出这个错误：
+
+   ```
+   Can't Update
+   			No tracked branch configured for branch master or the branch doesn't exist.
+   			To make your branch track a remote branch call, for example,
+   			git branch --set-upstream-to origin/master master (show balloon)
+   ```
+
+   此时，可以执行命令`git branch --set-upstream-to origin-repo/master master` 意思是使我们在git设置的本地远程名称`origin-repo/master`追踪远程仓库的`master`分支
+
+   ​
+
+   ​
