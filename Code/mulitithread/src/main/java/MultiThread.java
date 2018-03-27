@@ -7,9 +7,7 @@ public class MultiThread {
 
     private ExecutorService executorService;
 
-
     private ScheduledExecutorService singleScheduledExecutorService;
-
 
     private LinkedBlockingQueue<String> queue;
 
