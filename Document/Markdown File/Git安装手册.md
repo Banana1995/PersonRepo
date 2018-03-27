@@ -1,0 +1,121 @@
+### Git以及TortoiseGit安装使用
+
+#### 1. 下载安装Git-2.8.3-64-bit.exe程序
+
+- 默认选项一直next即可。
+
+
+- 本地初始化git的配置项，设置username和email，使用如下命令：
+
+ ```java
+git config --global user.name "abc"
+git config --global user.email "123abc@163.com"
+ ```
+
+--global 表示全局属性，所有的git项目都会公用这个属性。因为Git是分布式版本控制系统，需要一个用户名和email作为一个标识。
+
+#### 2. 配置ssh key
+
+- **生成秘钥对** 
+
+  在Git Bash中输入以下命令 ：
+
+  ``` 
+  ssh-keygen -t rsa -C "123abc@163.com"
+  ```
+  之后可以不用设置密码，按下3个回车键即可。接下来可以去默认路径 `C:\Users\banana\.ssh`下查看生成的两个文件，分别为 私钥：`id_rsa` 公钥：`id_rsa.pub` 
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324002602.png)
+
+- ​ **添加公钥到远程仓库** 
+  打开GitHub主页，在`Settings`-->`SSH and GPG keys`中，点击`New SSH key` 按钮；
+
+  再打开公钥文件，将其中的字符串完整复制，粘贴到`key` 中
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324002258.png)
+
+  执行`ssh -T git@github.com` 命令，查看公钥是否配置成功了，如下图所示则表示成功：
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324213757.png)
+
+- **将私钥添加到自己的系统中** 
+
+  使用命令： `ssh-add ~/.ssh/id_rsa`  添加私钥至系统中，若无效的话，建议采取以下两种方法：
+  1. 先执行 `eval 'ssh-agent-s' ` 再执行 `ssh-add ~/.ssh/id_rsa` ；
+  2. 先执行`ssh-agent bash --login -i` 启动bash，或者说把bash挂到ssh-agent下面，再执行 `ssh-add`
+
+  当看到下图所示结果时，则表示成功了
+
+![](C:\Users\banana\Pictures\微信截图_20180324003452.png)
+
+#### 3. 配置远程仓库
+
+- 登录github账号，新建一个远程仓库。
+
+- 在本地建一个与仓库同名的文件夹，在文件夹中打开Git Bash，执行如下命令：
+
+  ``` 
+  echo "# commang" >> README.md
+  新建一个README.md文件，写入“# commang”
+  git init
+  初始化git文件夹，创建master分支和.git文件夹
+  git add README.md
+  将工作区中的README.md文件添加进暂存区
+  git commit -m "first commit"
+  将暂存区的文件提交到master分支上
+  git remote add origin git@github.com:abc/gitTest.git
+  配置远程仓库地址命名为origin
+  git push -u origin master
+  将本地master分支的数据push到远程仓库的master分支上
+  ```
+
+- 若没能成功push去服务器的话，可以去检查下本地`.git` 文件夹下的`config` 文件，其中的url必须与上述命令中的远程地址相同。
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324141838.png)
+#### 4.安装TortoiseGit-2.6.0.0-64bit.msi文件 
+
+[下载TortoiseGit和中文语言包](https://tortoisegit.org/download/)
+
+- 默认选项一直next即可。
+
+- 创建本地仓库，在文件夹中`右键-->Git在这里创建版本库` （我使用的是中文版本），如下图：
+  ![](C:\Users\banana\Pictures\微信截图_20180324214536.png)
+
+  不用勾选，直接确定即可。
+
+- **设置网络和远端** 
+
+  **1. `右键-->设置` 将本地安装Git的ssh.exe路径地址配置到网络上，如下图：**
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324215326.png)
+
+  我的Git是安装在`C:\software\Git\`路径下 。
+
+  **2. 将远程仓库的地址粘贴到`URL`和`推送URL` 中，如下图：**
+
+  ![](C:\Users\banana\Pictures\微信截图_20180324214754.png)
+
+- 至此，你已经可以愉快的使用右键进行push和update了。
+
+#### 5. 使用过程遇到的问题
+
+1. **在新文件下拉取远程仓库报错：You asked to pull from the remote 'origin', but did not specify:a branch. Because this is not the default configured remotefor your current branch, you must specify a branch on the command line.**
+
+   找到：`.git/config`文件 添加如下
+
+   ```
+   [branch "master"]
+       remote = origin
+       merge = refs/heads/master
+   ```
+
+2. **在设置git远端地址时，尽量修改远端名称** 
+
+   ![](C:\Users\banana\Pictures\微信截图_20180327222554.png)
+
+   如果不设置的话，在同一个文件夹下，新建两个文件夹，在这两个文件夹中分别拉取不同仓库的内容时就会报错
+
+3.  **当新建了一个空的远程仓库，本地创建了一个关联到远端地址的仓库后，不要尝试拉取，否则会报出`Couldn't find remote ref master`错误信息**
+
+4. **idea使用Git时，需要配置ssh**
+
