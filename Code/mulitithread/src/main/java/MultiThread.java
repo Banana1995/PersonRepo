@@ -47,7 +47,7 @@ public class MultiThread {
         this.queue = Queues.newLinkedBlockingQueue(3);
         System.out.println("===连接zk");
 
-        //region 单线程池
+        //region 单线程间隔一段时间执行一次 删除zk所有节点
         this.singleScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
