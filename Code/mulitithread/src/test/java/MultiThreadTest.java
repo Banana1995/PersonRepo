@@ -4,13 +4,32 @@ import java.util.concurrent.Executors;
 
 public class MultiThreadTest {
 
-    public static void main(String[] args) throws InterruptedException {
-        MultiThread thread = new MultiThread();
-        for (int i=1;i<100;i++) {
-            thread.ImitateUser("第"+i+"节点");
-            Thread.sleep(2000);
+    static class ThreadC extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            for (int i =0 ;i<500;i++){
+                System.out.println("i的值为："+i);
+                try {
+                    sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
 
+
+    public static void main(String[] args) throws InterruptedException {
+
+        ThreadC a = new ThreadC();
+        a.start();
+        Thread.sleep(2000);
+
+        a.suspend();
+
+        System.out.println("main end");
+        a.resume();
     }
 
 
