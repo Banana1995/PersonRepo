@@ -3,7 +3,7 @@ import com.google.common.collect.Queues;
 import java.util.Date;
 import java.util.concurrent.*;
 
-public class MultiThread {
+public class MultiThread extends Thread{
 
     private ExecutorService executorService;
 
