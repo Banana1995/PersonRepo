@@ -13,6 +13,9 @@ public class ThreadA extends Thread{
         this.conditionA = conditionA;
         this.conditionB = conditionB;
     }
+    private void setLocka(){
+
+    }
 
     @Override
     public void run() {
