@@ -7,6 +7,9 @@
  * Last version:  1.0
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*********************************
  * 文件名称: ArraryTest.java
  * 系统名称：交易银行系统V1.0

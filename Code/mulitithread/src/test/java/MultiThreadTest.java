@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,14 +25,10 @@ public class MultiThreadTest {
 
     public static void main(String[] args) throws InterruptedException {
 
-        ThreadC a = new ThreadC();
-        a.start();
-        Thread.sleep(2000);
+        List<String> b = new ArrayList<>();
+        b.add("123");
+        System.out.println(b);
 
-        a.suspend();
-
-        System.out.println("main end");
-        a.resume();
     }
 
 
