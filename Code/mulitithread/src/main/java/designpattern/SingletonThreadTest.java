@@ -4,7 +4,7 @@ public class SingletonThreadTest extends Thread {
     @Override
     public void run() {
         //输出单例对象的hashcode
-        System.out.println(Singleton.getEntity().hashCode());
+        System.out.println(SingletonFactory.getSingletonByFactory().hashCode());
     }
 
     public static void main(String[] args) {
