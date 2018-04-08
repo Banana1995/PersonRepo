@@ -51,6 +51,20 @@ SELECT a.*, b.* FROM table_1 a,table_1 b WHERE a.name = b.name
 
 ### `on`与`where`条件的区别 
 
+`where`子查询是在内层查询的结果上作为外层查询的比较条件。当`on`与`where`一起使用的时候，`where`子查询会在`on`连接得出的结果上进行条件过滤。 当使用内连接的时候，`on`会作为连接条件 过滤掉不符合条件的结果。当不使用左连接或者右连接的时候，`on`只是作为连接条件，左表或右表的数据会全部输出。而`where`则是作为过滤条件，结果集中不会显示出`where`过滤掉的数据。因此，如下两种sql的执行结果是不一样的：
+
+```sql
+select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.tenant_id where a.no != 123
+#此sql将过滤掉a.no = 123的数据记录
+```
+
+```sql
+select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.tenant_id and a.no != 123
+#sql将可以得出a.no = 123的数据记录
+```
+
+所以一般建议，在`on`里面只放连接条件，在`where`中使用过滤条件。
+
 
 
 ## 数据库事务隔离
