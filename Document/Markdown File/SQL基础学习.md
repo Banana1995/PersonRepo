@@ -31,9 +31,15 @@ on table1.column1 = table2.column2
 
 完全外连接将显示两个表的所有数据，`join`左边表没有的数据用`null`表示，右边表没有的用`null`表示。
 
-- 交叉连接
+- 交叉连接 cross join
 
-得出的是两张表的笛卡尔积。
+```sql
+select * from table1 cross join table2
+```
+
+得出的是两张表的笛卡尔积。什么是笛卡尔积？如下图所示：
+
+![](/pic/微信截图_20180408203207.png)
 
 - 自连接
 
@@ -43,13 +49,21 @@ SELECT a.*, b.* FROM table_1 a,table_1 b WHERE a.name = b.name
 
 同一张表的两个别名 然后通过某一字段进行关联。
 
-## 主键外键
+## 
 
 
 
 ## 子查询
 
-### `on`与`where`条件的区别 
+### 1.where子查询
+
+### 2.from子查询
+
+### 3.exists子查询
+
+### 4.any，in子查询
+
+### 5.`on`与`where`条件的区别 
 
 `where`子查询是在内层查询的结果上作为外层查询的比较条件。当`on`与`where`一起使用的时候，`where`子查询会在`on`连接得出的结果上进行条件过滤。 当使用内连接的时候，`on`会作为连接条件 过滤掉不符合条件的结果。当不使用左连接或者右连接的时候，`on`只是作为连接条件，左表或右表的数据会全部输出。而`where`则是作为过滤条件，结果集中不会显示出`where`过滤掉的数据。因此，如下两种sql的执行结果是不一样的：
 
@@ -65,6 +79,18 @@ select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.ten
 
 所以一般建议，在`on`里面只放连接条件，在`where`中使用过滤条件。
 
+> 数据库在通过连接两张或多张表来返回记录时，都会生成一张中间的临时表，然后再将这张临时表返回给用户。
+>
+> 在使用left join时，on和where条件的区别如下：
+>
+> 1、 on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。
+>
+> 2、where条件是在临时表生成好后，再对临时表进行过滤的条件。这时已经没有left join的含义（必须返回左边表的记录）了，条件不为真的就全部过滤掉。
+
+
+
+## 主键外键
+
 
 
 ## 数据库事务隔离
@@ -77,7 +103,9 @@ select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.ten
 
 [参考文章二](http://www.cnblogs.com/chiangchou/p/mysql-3.html)
 
-[参考文章三](https://my.oschina.net/jun24bryant/blog/787375)
+[参考文章三](http://my.oschina.net/jun24bryant/blog/787375)
+
+[参考文章四](http://www.cnblogs.com/hjwublog/p/5952296.html)
 
 
 
