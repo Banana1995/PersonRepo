@@ -37,7 +37,7 @@ on table1.column1 = table2.column2
 select * from table1 cross join table2
 ```
 
-得出的是两张表的笛卡尔积。什么是笛卡尔积？如下图所示：
+`cross join`没有`on`连接条件，得出的是两张表的笛卡尔积。什么是笛卡尔积？如下图所示：
 
 ![](/pic/微信截图_20180408203207.png)
 
@@ -89,7 +89,13 @@ select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.ten
 
 
 
-## 主键外键
+## 主键、外键、唯一性索引
+
+- 主键是指当前表的唯一性约束；主键列不允许为空；为表定义主键会自动创建主键索引；主键的列可以作为外键；一个表只能有一个主键；
+- 外键是对当前表关联到其他表的字段的约束，这个字段的值必须存在于其他表中才能在当前表中插入；
+- 唯一性索引本质上是个索引，只是加了个唯一性的约束；唯一性索引的列允许为空，但是只要存在数据值就必须是唯一的；唯一性索引的列不允许作为外键；一个表可以有多个唯一性索引。
+
+当一个字段的值可以为空，但是业务上又可以作为一个唯一性标识的时候，就可以设置为唯一性索引。
 
 
 
@@ -106,6 +112,8 @@ select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.ten
 [参考文章三](http://my.oschina.net/jun24bryant/blog/787375)
 
 [参考文章四](http://www.cnblogs.com/hjwublog/p/5952296.html)
+
+[参考文章五](http://www.oraok.com/oracle/oracle-foreign-key.html)
 
 
 
