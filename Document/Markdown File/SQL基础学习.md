@@ -101,6 +101,8 @@ select a.column,b.column from table1 a left join table2 b on a.tenant_id = b.ten
 
 ## 数据库事务隔离
 
+## 拆表
+
 
 
 ## 参考文章
