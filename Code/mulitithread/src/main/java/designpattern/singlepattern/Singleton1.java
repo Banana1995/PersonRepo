@@ -1,4 +1,4 @@
-package designpattern;
+package designpattern.singlepattern;
 
 import java.io.Serializable;
 

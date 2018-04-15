@@ -1,4 +1,6 @@
-package designpattern;
+package designpattern.singlepattern;
+
+import designpattern.singlepattern.Singleton1;
 
 import java.io.*;
 

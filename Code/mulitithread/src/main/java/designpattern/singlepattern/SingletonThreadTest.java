@@ -1,4 +1,4 @@
-package designpattern;
+package designpattern.singlepattern;
 
 public class SingletonThreadTest extends Thread {
     @Override
