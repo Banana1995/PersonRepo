@@ -150,15 +150,147 @@
 
 ### 1. 关于Nginx配置文件
 
+在部署web工程前，我们需要了解Nginx的配置文件。Nginx的配置文件存放在`nginx/conf/nginx.conf`。我们需要打开这个文件根据自己的web工程需求配置这个文件。
+
+> 在nginx配置文件中主要分为四部分：`main` 全局设置，`server`主机设置，`upstream`（上游服务器设置，主要为反向代理、负载均衡相关配置）和 `location`（URL匹配特定位置后的设置） main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置一系列的后端服务器，设置反向代理及后端服务器的负载均衡；location部分用于匹配网页位置（比如，根目录“/”,“/images”,等等）。他们之间的关系式：server继承main，location继承server；upstream既不会继承指令也不会被继承。它有自己的特殊指令，不需要在其他地方的应用。 
+
+先贴一个配置文件，再来按照这个文件进行说明
+
+```
+#user  nobody;
+
+#在配置文件的顶级main部分，worker角色的工作进程的个数，master进程是接收并分配请求给worker处理。这个数值简单一点可以设置为cpu的核数grep ^processor /proc/cpuinfo | wc -l，也是 auto 值，如果开启了ssl和gzip更应该设置成与逻辑CPU数量一样甚至为2倍，可以减少I/O操作。如果nginx服务器还有其它服务，可以考虑适当减少。
+
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+#写在events部分。每一个worker进程能并发处理（发起）的最大连接数（包含与客户端或后端被代理服务器间等所有连接数）。nginx作为反向代理服务器，计算公式 最大连接数 = worker_processes * worker_connections/4，所以这里客户端最大连接数是1024，这个可以增到到8192都没关系，看情况而定，但不能超过后面的worker_rlimit_nofile。当nginx作为http服务器时，计算公式里面是除以2。
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+    #access_log  logs/access.log  main;
+	#开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，	减少用户空间到内核空间的上下文切换。对于普通应用设为 on，如果用来进行下载等应用	磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。
+    sendfile        on;
+    # tcp_nopush     on;
+	#长连接超时时间，单位是秒。长连接请求大量小文件的时候，可以减少重建连接的开销，	但假如有大文件上传，65s内没上传完成会导致失败。如果设置时间过长，用户又多，长时	 间保持连接会占用大量资源。
+    keepalive_timeout  65;
+
+  # gzip压缩功能设置
+	# 开启gzip压缩输出，减少网络传输
+    gzip on;
+	#设置允许压缩的页面最小字节数，页面字节数从header头得content-length中进行获取。默认值是20。建议设置成大于1k的字节数，小于1k可能会越压越大
+    gzip_min_length 1k;
+	#设置系统获取几个单位的缓存用于存储gzip的压缩结果数据流。4 16k代表以16k为单位，安装原始数据大小以16k为单位的4倍申请内存。
+    gzip_buffers    4 16k;
+	#gzip压缩比，1压缩比最小处理速度最快，9压缩比最大但处理速度最慢(传输快但比较消耗cpu)
+    gzip_comp_level 6;
+	#匹配mime类型进行压缩，无论是否指定,”text/html”类型总是会被压缩的。
+    gzip_types text/html text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml;
+    #和http头有关系，会在响应头加个 Vary: Accept-Encoding ，可以让前端的缓存服务器缓存经过gzip压缩的页面，例如，用Squid缓存经过Nginx压缩的数据。。
+	gzip_vary on;
+  
+  # http_proxy 设置
+	#允许客户端请求的最大单文件字节数。如果有上传较大文件，请设置它的限制值
+    client_max_body_size   10m;
+	#缓冲区代理缓冲用户端请求的最大字节数
+    client_body_buffer_size   128k;
+	#nginx跟后端服务器连接超时时间(代理连接超时)
+    proxy_connect_timeout   75;
+	#连接成功后，与后端服务器两个成功的响应操作之间超时时间(代理接收超时)
+    proxy_read_timeout   75;
+	#设置代理服务器（nginx）从后端realserver读取并保存用户头信息的缓冲区大小，默认		与proxy_buffers大小相同，其实可以将这个指令值设的小一点
+    proxy_buffer_size   4k;
+	#proxy_buffers缓冲区，nginx针对单个连接缓存来自后端realserver的响应，网页平均	  在32k以下的话，这样设置
+    proxy_buffers   4 32k;
+	#高负荷下缓冲大小（proxy_buffers*2）
+    proxy_busy_buffers_size   64k;
+	#当缓存被代理的服务器响应到临时文件时，这个选项限制每次写临时文件的大小。		proxy_temp_path（可以在编译的时候）指定写到哪那个目录。。
+    proxy_temp_file_write_size  64k;
+	#指定将上面的临时文件写到哪那个目录。
+    proxy_temp_path   /usr/local/nginx/proxy_temp 1 2;
+
+  # 设定负载均衡后台服务器列表 
+    upstream  arc  { 
+              #ip_hash; 
+              server   192.168.10.100:8080 max_fails=2 fail_timeout=30s ;  
+              server   192.168.10.101:8080 max_fails=2 fail_timeout=30s ;  
+    }
+
+  # 很重要的虚拟主机配置
+    server {
+		#虚拟主机监听的端口
+        listen       8001;
+		#服务器名
+        server_name  localhost;
+
+        #charset utf-8;
+        #access_log  logs/host.access.log  main;
+
+        #对 / 所有做负载均衡+反向代理
+        location / {
+		   #定义服务器的默认网站根目录位置。
+            root   html;
+		   #定义路径下默认访问的文件名
+            index  index.jsp index.html index.htm;
+		   #请求转向arc定义的服务器列表，即反向代理，对应upstream负载均衡器。
+            proxy_pass        http://arc;
+		   #下面这几个就这么设置吧  具体的我也不清楚
+            proxy_redirect off;
+            # 后端的Web服务器可以通过X-Forwarded-For获取用户真实IP
+            proxy_set_header  Host  $host;
+            proxy_set_header  X-Real-IP  $remote_addr;  
+            proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
+            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+            
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+
+  ## 其它虚拟主机，server 指令开始
+}
+```
+
 ### 2. 部署前端工程
 
-
+将web项目上传到Nginx的安装目录中的`html`文件夹中。修改`nginx.conf`配置文件。
 
 ## 遇到的问题
 
+1. web端不能访问
 
+   检查防火墙是否关闭！关闭防火墙：`service iptables stop`
+
+2. 非root用户报出`bind() to 0.0.0.0:80 failed (13:Permission denied)`错误
+
+   这是由于非root用户启动时，`nginx.conf`文件中配置的端口为`80`，而在Linux中只有root用户才能使用1024以下的端口。所以只要讲配置文件中的端口修改为1024以上即可。
 
 ## 参考链接
 
 [Nginx安装](http://www.nginx.cn/install)
 
+[Nging下部署项目，配置文件修改](https://blog.csdn.net/tototuzuoquan/article/details/47381907)
+
+[nginx服务器安装及配置文件详解](http://seanlook.com/2015/05/17/nginx-install-and-config/)
