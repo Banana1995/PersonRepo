@@ -100,12 +100,46 @@ git config --global user.email "123abc@163.com"
 #### 5. 使用本地`Pageant`记住你的私钥密码
 
 1. 开始菜单找到TortoiseGit菜单下的puttygen，打开puttygen
+
+   ![](Git使用手册\1.png)
+
+   
+
 2. 选择导入秘钥
+
+   ![](Git使用手册\2.png)
+
 3. 选择C:\Users\Administrator\.ssh目录下的私钥，并输入秘钥密码
+
+   ![](Git使用手册\3.png)
+
+   ![](Git使用手册\3.1.png)
+
 4. 选择save private key，将私钥另存为ppk格式的秘钥
+
+   ![](Git使用手册\4.png)
+
+   ![](Git使用手册\4.1.png)
+
 5. 开始菜单找到TortoiseGit菜单下的pageant，打开
+
+   ![](Git使用手册\5.png)
+
 6. 点击add key，选择ppk秘钥，输入密码
-7. 每次开机启动pagent并添加ppk秘钥
+
+   ![](Git使用手册\6.png)
+
+   ![](Git使用手册\6.1.png)
+
+   每次开机启动pagent并添加ppk秘钥
+
+7. 点击torise git – settings 
+
+   ![](Git使用手册\7.png)
+
+8. 设置network—ssh的路径，设置为“C:\Program Files\TortoiseGit\bin\TortoisePlink.exe” 
+
+   ![](Git使用手册\8.png)
 
 #### 6. 使用过程遇到的问题
 
