@@ -95,9 +95,19 @@ git config --global user.email "123abc@163.com"
 
   ![](C:\Users\banana\Pictures\微信截图_20180324214754.png)
 
-- 至此，你已经可以愉快的使用右键进行push和update了。
+- 至此，你已经可以愉快的使用右键进行push和update了，但是会时不时遇到需要输入密码，但是你怎么输都不对的情况。
 
-#### 5. 使用过程遇到的问题
+#### 5. 使用本地`Pageant`记住你的私钥密码
+
+1. 开始菜单找到TortoiseGit菜单下的puttygen，打开puttygen
+2. 选择导入秘钥
+3. 选择C:\Users\Administrator\.ssh目录下的私钥，并输入秘钥密码
+4. 选择save private key，将私钥另存为ppk格式的秘钥
+5. 开始菜单找到TortoiseGit菜单下的pageant，打开
+6. 点击add key，选择ppk秘钥，输入密码
+7. 每次开机启动pagent并添加ppk秘钥
+
+#### 6. 使用过程遇到的问题
 
 1. **在新文件下拉取远程仓库报错：You asked to pull from the remote 'origin', but did not specify:a branch. Because this is not the default configured remotefor your current branch, you must specify a branch on the command line.**
 
