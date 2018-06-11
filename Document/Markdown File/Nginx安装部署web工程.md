@@ -140,8 +140,8 @@
 >       --conf-path=/usr/local/nginx/nginx.conf
 >       --pid-path=/usr/local/nginx/nginx.pid
 >       --with-http_ssl_module
->       --with-pcre=../pcre-4.4
->       --with-zlib=../zlib-1.1.3
+>       --with-pcre=../pcre-8.38
+>       --with-zlib=../zlib-1.2.10
 >   ```
 >
 >   
@@ -286,6 +286,8 @@ http {
 2. 非root用户报出`bind() to 0.0.0.0:80 failed (13:Permission denied)`错误
 
    这是由于非root用户启动时，`nginx.conf`文件中配置的端口为`80`，而在Linux中只有root用户才能使用1024以下的端口。所以只要讲配置文件中的端口修改为1024以上即可。
+
+3. nginx make时遇到：`make[1]: *** [/usr/local/pcre//Makefile] Error 127` 错误，则是由于在使用`./configure -with-pcre=XXX --with-zlib=XXX`时，需要指定的是`pcre`和`zlib`的源码目录，而不是编译目录，也就是说需要指定到`-with-pcre=XXX\pcre-8.38 --with-zlib=XXX\zlib-1.2.10`
 
 ## 参考链接
 
