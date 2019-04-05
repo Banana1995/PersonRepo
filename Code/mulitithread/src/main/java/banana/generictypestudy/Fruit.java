@@ -1,6 +1,6 @@
 package banana.generictypestudy;
 
-public class Fruit<T> {
+public class  Fruit<T> {
 
     private T fruit;
 
