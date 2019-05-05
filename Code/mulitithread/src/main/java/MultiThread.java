@@ -1,6 +1,8 @@
 import com.google.common.collect.Queues;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class MultiThread extends Thread{
@@ -11,6 +13,7 @@ public class MultiThread extends Thread{
 
     private LinkedBlockingQueue<String> queue;
 
+    CountDownLatch
     /**
      * 模仿用户获取序列号方法 往队列中放入数据
      *
@@ -19,6 +22,9 @@ public class MultiThread extends Thread{
      */
     public void ImitateUser(String user) throws InterruptedException {
         queue.put(user);
+        Map<String,Integer> ass = new HashMap<>();
+        ass.c
+
         System.out.println(Thread.currentThread().getName()+"线程添加节点："+user+"，队列中共有"+queue.size()+"条数据,当前线程状态为:"+Thread.currentThread().getState());
     }
 
