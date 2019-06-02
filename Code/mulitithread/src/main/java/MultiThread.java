@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MultiThread extends Thread{
 
@@ -17,7 +19,9 @@ public class MultiThread extends Thread{
         char a = 'A'+655;
         char d = '\u0041';
         String b = "A";
-
+        Thread dd = new Thread();
+        dd.join();
+        ReentrantLock
         String c = String.valueOf((char)(a+ 1));
     }
 
