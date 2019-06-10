@@ -4,11 +4,12 @@
 
  continue reading 《effective java》
 
-- Item 14 : Always override hashCode when you override equals
+- Item 14 : consider implement comparable
 
-  > 1. You must override hashCode method in every class that overrides equals.Here are the contract,adapted from the Object specification:
-  >    - when the hashCode method is invoked on an object repeatedly during an execution of an application, it must consistently return the same value.
-  >    - if two objects are equal according to the equals method , then calling hashCode on the two  
+  > 1. By implement comparable, you allow you class to interoperate with all of many generic algorithms and collection implementations that depends on this interface.
+  > 2. If  a field does not implement comparable or you need a nonstandard ordering , use a Comparator instead.
+  > 3. Use of the relational operators < and > in compareTo methods is
+  >    verbose and error-prone and no longer recommended
 
 
 ## Tips
