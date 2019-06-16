@@ -7,23 +7,53 @@ tags: "ARTS"
 
 # ARTS第七周
 
-本次ARTS主要包括：Excel列名称算法题；读完《Java并发编程艺术》整书的思维导图；VIM编程技巧关于上下移动一行和向上或向下查询当前游标下的单词等操作；
-
-上周没有打卡，最近的重心都放在读书上，没有仔细的做算法题。
+本次ARTS主要包括：最大同值路径问题算法；读完《Java并发编程艺术》整书的思维导图；VIM编程技巧关于上下移动一行和向上或向下查询当前游标下的单词等操作；
 
 <!--more-->
 
-
-
 ## Algorithm
 
-> 168.Excel表列名称
+> 168.Longest Univalue Path
 
 ```java
-
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    Integer res =0;
+    public int longestUnivaluePath(TreeNode root) {
+        recurisionMethod(root);
+        return res; 
+    }
+    
+    public Integer recurisionMethod(TreeNode root){
+        if(root == null) return 0;
+        int left = recurisionMethod(root.left) ;
+        int right = recurisionMethod(root.right);
+        if(root.left !=null && root.left.val == root.val){
+            left = left +1;
+        }else{
+            left =0 ;
+        }
+        
+        if(root.right !=null && root.right.val == root.val){
+            right= right+1;
+        }   else{
+            right=0;
+        }    
+        res = Math.max(res,left+right);
+        return Math.max(left,right);
+    }
+}
 ```
 
-
+最长同值路径问题。自己没有做出来，看了题解的思路。对于递归的问题，我解起来还是比较费劲的。另外就是犯了一个java方法传递值得问题。此处的结果需要定义成全局变量，不能使用一个int类型作为参数传递。因为java是值传递而不是引用传递。
 
 ## Review
 
