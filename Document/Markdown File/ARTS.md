@@ -1,15 +1,49 @@
 # ARTS
 
+## Algorithm
+
+> 78.颜色分类
+
+```java
+class Solution {
+    public void sortColors(int[] nums) {
+        recurisionFastOrder(nums,0,nums.length-1);
+    }
+    
+    private void recurisionFastOrder(int[] nums,int start,int end){
+        if(start>=end){
+            return;
+        }
+        int pivot =  nums[end];
+        int i=start;
+        // int j =start;
+        for(int j = start;j<end;j++){
+            //j指向的数字小于中枢点时 则需要与i交换，同时i往后移，保证从i到j都是大于中枢点的值
+            if(nums[j]<pivot){
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+                i++;
+            }
+        }
+        int temp = nums[i];
+        nums[i] = pivot;
+        nums[end] = temp;
+        recurisionFastOrder(nums,start,i-1);
+        recurisionFastOrder(nums,i+1,end);
+    }
+}
+```
+
+我得解法与题解给的不同，用的是快排的算法，快排的递推公式为：`f(p,r)=f(p,q-1)+f(q+1,r)`.其中的q为中枢点。将整个排序的数据分为两部分，[p,q-1]为小于q的部分，[q+1,r]为大于q的部分。剩下的就是确定中枢点的位置了。快排算法是使用两个指针i和j，一个从头开始遍历，当遇到比尾部的值小的时候，则将两个指针的值交换，并将两个指针都往后移一步。这样保持从i到j之间的区间一直都是大于尾部的值的。一次遍历完成后，将i指针的值与尾部的值交换，i点则为中枢点。
+
 ## Review
 
  continue reading 《effective java》
 
 - Item 14 : consider implement comparable
 
-  > 1. By implement comparable, you allow you class to interoperate with all of many generic algorithms and collection implementations that depends on this interface.
-  > 2. If  a field does not implement comparable or you need a nonstandard ordering , use a Comparator instead.
-  > 3. Use of the relational operators < and > in compareTo methods is
-  >    verbose and error-prone and no longer recommended
+  > 1. 
 
 
 ## Tips
@@ -22,42 +56,5 @@
 
 ##Share
 
-处理mysql插入记录重复的几种方式
-
-- 使用`insert ignore`
-
-> Use the **INSERT IGNORE** command rather than the **INSERT** command. If a record doesn't duplicate an existing record, then MySQL inserts it as usual. If the record is a duplicate, then the **IGNORE** keyword tells MySQL to discard it silently without generating an error.
->
-> 当记录不存在是，mysql会正常插入；当记录已经存在时，`ignore`关键字会告诉mysql静默的将数据丢掉而不报出错误。下面的sql语句将不会报错：
->
-> ```sql
-> mysql> INSERT IGNORE INTO person_tbl (last_name, first_name)
->    -> VALUES( 'Jay', 'Thomas');
-> Query OK, 1 row affected (0.00 sec)
 > 
-> mysql> INSERT IGNORE INTO person_tbl (last_name, first_name)
->    -> VALUES( 'Jay', 'Thomas');
-> Query OK, 0 rows affected (0.00 sec)
-> ```
-
-- 使用`replace` 
-
-> Use the **REPLACE** command rather than the INSERT command. If the record is new, it is inserted just as with INSERT. If it is a duplicate, the new record replaces the old one.
->
-> 使用`replace`命令来插入时，当记录不存在，则会正常插入。若已经存在，则会用新的记录代替原先的记录（先删再插）。示例如下：
->
-> ```sql
-> mysql> REPLACE INTO person_tbl (last_name, first_name)
->    -> VALUES( 'Ajay', 'Kumar');
-> Query OK, 1 row affected (0.00 sec)
-> 
-> mysql> REPLACE INTO person_tbl (last_name, first_name)
->    -> VALUES( 'Ajay', 'Kumar');
-> Query OK, 2 rows affected (0.00 sec)
-> ```
-
-- ***当处理重复插入记录时，应该在`insert ignore`和`replace`中选择一个，`insert ignore`会保留第一次插入的记录，而`replace`则保留的是最后的一条记录。*** 
-- 使用`insert into...on duplicate key update id=id`
-
-> 这里使用`id=id`来在更新时做无用操作来完成在key重复时什么都不做。
 
