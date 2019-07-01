@@ -1,5 +1,6 @@
 package com.arch.ccc.storminaction;
 
+import com.arch.ccc.storminaction.bolt.ReportBolt;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ public class StorminactionApplicationTests {
 
     @Test
     public void contextLoads() {
+
     }
 
 }
