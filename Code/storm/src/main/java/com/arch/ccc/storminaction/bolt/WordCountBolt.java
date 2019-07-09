@@ -70,4 +70,45 @@ public class WordCountBolt extends BaseRichBolt {
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("word", "count"));
     }
+
+
+    public ListNode sortList(ListNode head) {
+        if (head.next == null) {
+            return head;
+        }
+        int i = 0;
+        int j = 0;
+        ListNode twoStep = head;
+        ListNode oneStep = head;
+        ListNode privoit = head;
+        while (twoStep.next != null) {
+            oneStep = oneStep.next;
+            privoit = oneStep;
+            twoStep = twoStep.next.next;
+        }
+        //断开链表
+        ListNode ta = privoit.next
+        privoit.next = null;
+
+        merge(sortList(head), sortList(ta))
+    }
+
+    private ListNode merge(ListNode a, ListNode b) {
+        ListNode head = new ListNode(0);
+        ListNode point = head;
+        while (a.next != null && b.next != null) {
+            if (a.val < b.val) {
+                point.next = a;
+                a = a.next;
+            } else {
+                point.next = b;
+                b = b.next;
+            }
+            point = point.next;
+        }
+        point.next = a.next == null ? b : a;
+        return head.next;
+    }
+
+
 }

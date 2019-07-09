@@ -11,6 +11,11 @@ public class WordCountTopology {
     private static final String REPORT_BOLT_ID = "report-bolt";
     private static final String TOPOLOGY_NAME = "word-count-topology";
 
-   
+    public static void main(String[] args) {
+        WordCountTopology wordCountTopology = new WordCountTopology();
+        int[] h = {1};
+        wordCountTopology.hIndex(h);
+    }
 
 }
+
