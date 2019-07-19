@@ -14,7 +14,7 @@ public class WordCountTopology {
     public static void main(String[] args) {
         WordCountTopology wordCountTopology = new WordCountTopology();
         int[] h = {1};
-        wordCountTopology.hIndex(h);
+//        wordCountTopology.hIndex(h);
     }
 
 }
