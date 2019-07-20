@@ -12,7 +12,12 @@ public class StorminactionApplicationTests {
 
     @Test
     public void contextLoads() {
+        int target = 12;
+        int[] position = {10,8,0,5,3};
+        int[] speed = {2,4,1,1,3};
 
+        Fleet fleet = new Fleet();
+        fleet.carFleet(target, position, speed);
     }
 
 }
