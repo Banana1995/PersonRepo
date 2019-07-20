@@ -30,8 +30,9 @@ public class Fleet {
         //from farest to earliest car
         Arrays.sort(position);
         int res = cars;
-        for (int i = 0; i < cars - 1; i++) {
-            if (posiSpeedMap.get(position[i]) <= posiSpeedMap.get(position[i + 1])) {
+        for (int i = cars - 1; i >0 ; i--) {
+            if (posiSpeedMap.get(position[i]) >= posiSpeedMap.get(position[i - 1])) {
+                position[i - 1] = position[i];
                 res--;
             }
         }
