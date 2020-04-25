@@ -1704,4 +1704,28 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
     }
 
 
+    public int findString(String[] words, String s) {
+        int left = 0;
+        int right = words.length - 1;
+        while (left <= right) {
+            int mid = (left + right) >>> 1;
+            while (words[left].equals("")) left++;
+            while (words[right].equals("")) right--;
+            while (words[mid].equals("") && mid < right) mid++;
+            if (words[mid].equals("")) {
+                right = ((left + right) >>> 1) - 1;
+            } else {
+                if (words[mid].compareTo(s) > 0) {
+                    right = mid - 1;
+                } else if (words[mid].compareTo(s) < 0) {
+                    left = mid + 1;
+                } else {
+                    return mid;
+                }
+            }
+        }
+
+        return -1;
+    }
+
 }
