@@ -1668,4 +1668,40 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         Arrays.sort(chars);
         return new String(chars);
     }
+
+    public int search(int[] arr, int target) {
+        int left = 0;
+        int right = arr.length - 1;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (arr[mid] < arr[right]) {
+                //从mid至right之间是递增的
+                if (arr[mid] < target && arr[right] >= target && target != arr[left]) {
+                    left = mid + 1;//下一次从[mid+1,right]中查找
+                } else {
+                    right = mid;//下一次从[left，mid]中查找
+                }
+            } else if (arr[mid] > arr[right]) {
+                //从left到mid之间是递增的
+                if (arr[left] <= target && arr[mid] >= target) {
+                    right = mid;//下一次从[left,mid]中查找
+                } else {
+                    left = mid + 1;//下一次从[mid+1,right]中查找
+                }
+            } else {
+                //arr[mid] == arr[right]
+                if (arr[mid] == target) {
+                    right = mid;
+                } else {
+                    right--;//下一轮从 [left,right-1]
+                }
+            }
+        }
+        if (arr[left] == target) {
+            return left;
+        }
+        return -1;
+    }
+
+
 }
