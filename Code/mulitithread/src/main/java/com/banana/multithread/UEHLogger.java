@@ -1521,11 +1521,13 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[][] te = new int[3][3];
-        te[1] = new int[]{2, 2, 2};
-        te[0] = new int[]{1, 1, 1};
-        te[2] = new int[]{3, 3, 3};
-        int res = uehLogger.pileBox(te);
+        int[][] te = new int[5][5];
+        te[0] = new int[]{1, 4, 7, 11, 15};
+        te[1] = new int[]{2, 5, 8, 12, 19};
+        te[2] = new int[]{3, 6, 9, 16, 22};
+        te[3] = new int[]{10, 13, 14, 17, 24};
+        te[4] = new int[]{18, 21, 23, 26, 30};
+        boolean res = uehLogger.searchMatrix(te, 5);
         System.out.println(res);
     }
 
@@ -1726,6 +1728,65 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         }
 
         return -1;
+    }
+
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0) {
+            return false;
+        }
+        int row = 0;
+        int column = matrix[0].length - 1;
+        while (row <= matrix.length - 1 && column > 0) {
+            if (matrix[row][column] > target) {
+                column--;
+            } else if (matrix[row][column] < target) {
+                row++;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int findRow(int[][] matrix, int target, int totalRow, int totalColumn) {
+        if (matrix[totalRow - 1][totalColumn - 1] < target) {
+            return -1;
+        }
+        int left = 0;
+        int right = totalRow - 1;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (matrix[mid][totalColumn - 1] > target) {
+                right = mid - 1;
+            } else if (matrix[mid][totalColumn - 1] < target) {
+                left = mid + 1;
+            } else if (matrix[mid][totalColumn - 1] == target) {
+                return mid;
+            }
+        }
+        return left;
+    }
+
+    public void wiggleSort(int[] nums) {
+        Arrays.sort(nums);
+        int mid = nums.length / 2;
+        //排好序之后，将前半段的峰位与后半段的谷位进行交换即可得到峰-谷交错的序列
+        for (int i = 0; i < mid; i += 2) {
+            if ((mid & 1) == 0) {
+                //当中间位是偶数时，那么后半段的谷位从mid+1开始，如[1,2,3,4]的mid是2，下标为2的数字是3，后半段的谷位开始是第2+1位=4
+                swapab(nums, i, i + mid + 1);
+            } else {
+                //当中间位是奇数时，那么后半段的谷位从mid开始，如[1,2,3,4,5,6]的mid是3，下标为3的数字是4，后半段的谷位开始是第3位=4
+                swapab(nums, i, i + mid);
+            }
+        }
+    }
+
+    private void swapab(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
     }
 
 }
