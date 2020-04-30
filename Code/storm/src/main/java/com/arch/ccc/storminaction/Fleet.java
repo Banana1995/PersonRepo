@@ -39,6 +39,23 @@ public class Fleet {
         return res;
     }
 
+
+
+     public double getPow(double x, long n) {
+         if (n == 0) {
+             return 1.0;
+         }
+         long beta = ((n>>31)^n)-(n>>31);
+         long p = beta / 2;
+         double value = 1;
+         if((beta&1)!=0){
+            value=  x*getPow(x*x,p);
+         }else{
+             value = getPow(x*x,p);
+         }
+         return n >> 31 == 0 ? value : 1 / value;
+     }
+
 }
 
 
