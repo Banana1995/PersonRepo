@@ -1521,14 +1521,9 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[][] te = new int[5][5];
-        te[0] = new int[]{1, 4, 7, 11, 15};
-        te[1] = new int[]{2, 5, 8, 12, 19};
-        te[2] = new int[]{3, 6, 9, 16, 22};
-        te[3] = new int[]{10, 13, 14, 17, 24};
-        te[4] = new int[]{18, 21, 23, 26, 30};
-        boolean res = uehLogger.searchMatrix(te, 5);
-        System.out.println(res);
+        int[] res = new int[]{1, 2};
+        uehLogger.swapNumbers(res);
+        System.out.println(Arrays.toString(res));
     }
 
     public int pileBox(int[][] box) {
@@ -1788,5 +1783,17 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         nums[a] = nums[b];
         nums[b] = temp;
     }
+
+    public int[] swapNumbers(int[] numbers) {
+        if (numbers[0] == numbers[1]) {
+            return numbers;
+        }
+        numbers[0] = numbers[0] ^ numbers[1];
+        numbers[1] = numbers[0] ^ numbers[1];
+        numbers[0] = numbers[0] ^ numbers[1];
+        return numbers;
+    }
+
+
 
 }
