@@ -1521,8 +1521,9 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[] res = new int[]{1, 2};
-        uehLogger.swapNumbers(res);
+        int[] res = new int[]{Integer.MIN_VALUE, 1};
+        int[] res2 = new int[]{Integer.MAX_VALUE, 0};
+        int i = uehLogger.smallestDifference(res, res2);
         System.out.println(Arrays.toString(res));
     }
 
@@ -1794,6 +1795,53 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         return numbers;
     }
 
+    public int trailingZeroes(int n) {
+        if (n < 2) return 0;
+        int count = 0;
+        while (n > 0) {
+            count += n / 5;
+            n = n / 5;
+        }
+        return count;
+    }
 
+    public int smallestDifference(int[] a, int[] b) {
+        Arrays.sort(a);
+        Arrays.sort(b);
+        long min = Integer.MAX_VALUE;
+        int i = 0;
+        int j = 0;
+        while (i < a.length && j < b.length) {
+            if (Math.abs((long) a[i] - (long) b[j]) < min) {
+                min = Math.abs((long) a[i] - (long) b[j]);
+            }
+            if (a[i] > b[j]) {
+                j++;
+            } else {
+                i++;
+            }
+        }
+        return (int) min;
+    }
 
+    public int maximum(int a, int b) {
+        int signa = sign(a);
+        int signb = sign(b);
+        int signc = sign(a - b);
+        int same_sign_a = signa ^ signb;//a,b符合相同为0  符号不同为1
+        int same_sign_c = flip(same_sign_a);//same_sign_a 的反向数
+        int k = same_sign_a * signa + same_sign_c * signc;//符合相同为signc，不同为signa
+        int q = flip(k);
+        return a * k + b * q;
+    }
+
+    //翻转符号位
+    private int flip(int a) {
+        return a ^ 1;
+    }
+
+    //负数返回0 正数返回a
+    private int sign(int a) {
+        return flip((a >> 31) & 0x01);//此处使用算术右移必须与0x01做与运算，不能与1做与运算
+    }
 }
