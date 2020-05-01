@@ -33,8 +33,16 @@ public class SentenceSpout extends BaseRichSpout {
         Utils.sleep(10);
     }
 
+
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
         outputFieldsDeclarer.declare(new Fields("sentence"));
     }
+
+    //binary search at a matrix
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int rowLength = matrix.length;
+        return  false;
+    }
+
 }
