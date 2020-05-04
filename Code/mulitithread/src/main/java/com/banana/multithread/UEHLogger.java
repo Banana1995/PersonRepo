@@ -1330,10 +1330,10 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         sets.addAll(temp);
     }
 
-    public int multiply(int A, int B) {
-        HashMap<Integer, Integer> memo = new HashMap<>();
-        return getMultiplyValue(A, B, memo);
-    }
+//    public int multiply(int A, int B) {
+//        HashMap<Integer, Integer> memo = new HashMap<>();
+//        return getMultiplyValue(A, B, memo);
+//    }
 
     int getMultiplyValue(int A, int B, HashMap<Integer, Integer> memo) {
         if (B == 0) {
@@ -1521,10 +1521,10 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[] res = new int[]{Integer.MIN_VALUE, 1};
-        int[] res2 = new int[]{Integer.MAX_VALUE, 0};
-        int i = uehLogger.smallestDifference(res, res2);
-        System.out.println(Arrays.toString(res));
+        int[] bir = new int[]{1972, 1908, 1915, 1957, 1960, 1948, 1912, 1903, 1949, 1977, 1900, 1957, 1934, 1929, 1913, 1902, 1903, 1901};
+        int[] dea = new int[]{1997, 1932, 1963, 1997, 1983, 2000, 1926, 1962, 1955, 1997, 1998, 1989, 1992, 1975, 1940, 1903, 1983, 1969};
+        int i = uehLogger.maxAliveYear(bir, dea);
+        System.out.println(i);
     }
 
     public int pileBox(int[][] box) {
@@ -1844,4 +1844,108 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
     private int sign(int a) {
         return flip((a >> 31) & 0x01);//此处使用算术右移必须与0x01做与运算，不能与1做与运算
     }
+
+    public int minus(int a, int b) {
+        return a + (-b);
+    }
+
+    public int multiply(int a, int b) {
+        int sameSign = ((a >> 31) ^ (b >> 31)) & 1;//符号位相同为0，相异为1
+        long absA = Math.abs((long) a) < Math.abs((long) b) ? Math.abs((long) a) : Math.abs((long) b);
+        long absB = Math.abs((long) a) < Math.abs((long) b) ? Math.abs((long) b) : Math.abs((long) a);
+        long res = absB;
+        int temp = 1;
+        while (absA > temp) {
+            if (absA > temp + temp) {
+                res += res;
+                temp += temp;
+            } else {
+                res += absB;
+                temp++;
+            }
+        }
+        return sameSign == 0 ? (int) res : (int) -res;
+    }
+
+    public int divide(int a, int b) {
+        if (a == 0x80000000) {
+            return a;
+        }
+        int sameSign = ((a >> 31) ^ (b >> 31)) & 1;//符号位相同为0，相异为1
+        int absA = Math.abs(a);
+        int absB = Math.abs(b);
+        int res = 0;
+        int index = 0;
+        int[] temp = new int[32];
+        int[] bit = new int[32];
+        temp[0] = absB;
+        bit[0] = 1;
+        for (int i = 1; i < temp.length; i++) {
+            if (temp[i - 1] + temp[i - 1] > absA || temp[i - 1] + temp[i - 1] < 0) break;
+            temp[i] = temp[i - 1] + temp[i - 1];
+            bit[i] = bit[i - 1] + bit[i - 1];
+            index++;
+        }
+        for (int i = index; i >= 0; i--) {
+            if (absA >= temp[i]) {
+                absA = minus(absA, temp[i]);
+                res += bit[i];
+            }
+
+        }
+        return sameSign == 0 ? res : -res;
+    }
+
+
+    public int maxAliveYear(int[] birth, int[] death) {
+        Arrays.sort(birth);
+        Arrays.sort(death);
+        int length = birth.length;
+        int maxLivedYear = 0;
+        int i = 0;
+        int j = 0;
+        int aliveCount = 0;
+        int birthCount = 0;
+        int deathCount = 0;
+        while (i < length) {
+            if (birth[i] <= death[j]) {
+                birthCount++;
+                if (birthCount - deathCount > aliveCount) {
+                    aliveCount = birthCount - deathCount;
+                    maxLivedYear = birth[i];
+                }
+                i++;
+            } else if (j < length) {
+                if (birthCount - deathCount > aliveCount) {
+                    aliveCount = birthCount - deathCount;
+                    maxLivedYear = death[j];
+                }
+                deathCount++;
+                j++;
+            }
+        }
+        return maxLivedYear;
+    }
+
+    public int[] divingBoard(int shorter, int longer, int k) {
+        int[] ans = new int[k + 1];
+        if (k == 0) {
+            return new int[0];
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+        for (int i = 0; i <= k; i++) {
+            ans[i] = shorter * (k - i) + longer * i;
+        }
+        return ans;
+    }
+
+
+
+
+
+
+
+
 }
