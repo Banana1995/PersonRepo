@@ -1521,10 +1521,9 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[] bir = new int[]{1972, 1908, 1915, 1957, 1960, 1948, 1912, 1903, 1949, 1977, 1900, 1957, 1934, 1929, 1913, 1902, 1903, 1901};
-        int[] dea = new int[]{1997, 1932, 1963, 1997, 1983, 2000, 1926, 1962, 1955, 1997, 1998, 1989, 1992, 1975, 1940, 1903, 1983, 1969};
-        int i = uehLogger.maxAliveYear(bir, dea);
-        System.out.println(i);
+        int[] square1 = new int[]{68, 130, 64};
+        int[] square2 = new int[]{-230, 194, 7};
+        double[] doubles = uehLogger.cutSquares(square1, square2);
     }
 
     public int pileBox(int[][] box) {
@@ -1942,10 +1941,90 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
     }
 
 
+    public double[] cutSquares(int[] square1, int[] square2) {
+        double[] res = new double[4];
+        int x1 = square1[0];
+        int x2 = square2[0];
+        int y1 = square1[1];
+        int y2 = square2[1];
+        double center1x = (x1 + x1 + square1[2]) / 2d;
+        double center1y = (y1 + y1 + square1[2]) / 2d;
+        double center2x = (x2 + x2 + square2[2]) / 2d;
+        double center2y = (y2 + y2 + square2[2]) / 2d;
+        if (center1x == center2x) {
+            res[0] = center1x;
+            res[1] = y1 < y2 ? y1 : y2;
+            res[2] = center2x;
+            res[3] = y1 + square1[2] < y2 + square2[2] ? y2 + square2[2] : y1 + square1[2];
+            return res;
+        }
+        if (center1y == center2y) {
+            res[0] = x1 < x2 ? x1 : x2;
+            res[1] = center1y;
+            res[2] = x1 + square1[2] < x2 + square2[2] ? x2 + square2[2] : x1 + square1[2];
+            res[3] = center2y;
+            return res;
+        }
+        //斜率
+        double rate = (center2y - center1y) / (center2x - center1x);
+        //截距
+        double dis = center1y - rate * center1x;
+        if (Math.abs(rate) > 1) {
+            //交点在上下边
+            int bottomy = y1 < y2 ? y1 : y2;
+            int topy = y1 + square1[2] < y2 + square2[2] ? y2 + square2[2] : y1 + square1[2];
+            double bottomx = bottomy / rate;
+            double topx = topy / rate;
+            //point1：(y1+square[2]-dis)/rate , y1+square1[2]   ponit2:(y1-dis)/rate ,y1
+            //point3: (y2+square2[2]-dis)/rate ,y2+square2[2]   point4:(y2-dis)/rate ,y2
+            res[0] = Math.min(Math.min((y1 + square1[2] - dis) / rate, (y1 - dis) / rate), Math.min((y2 + square2[2] - dis) / rate, (y2 - dis) / rate));
+            res[1] = res[0] * rate + dis;
+            res[2] = Math.max(Math.max((y1 + square1[2] - dis) / rate, (y1 - dis) / rate), Math.max((y2 + square2[2] - dis) / rate, (y2 - dis) / rate));
+            res[3] = res[2] * rate + dis;
 
+        } else {
+            //交点在左右两边
+            int leftx = x1 < x2 ? x1 : x2;
+            int rightx = x1 + square1[2] < x2 + square2[2] ? x2 + square2[2] : x1 + square1[2];
+            double topy = leftx * rate;
+            double bottomy = rightx * rate;
+            res[0] = leftx;
+            res[1] = topy + dis;
+            res[2] = rightx;
+            res[3] = bottomy + dis;
+        }
+        return res;
+    }
 
+//    public int numDecodings(String s) {
+//
+//    }
 
-
-
-
+    public int[] masterMind(String solution, String guess) {
+        int bingo = 0;
+        int fakeBingo = 0;
+        HashMap<String, Integer> temp = new HashMap<>();
+        for (int i = 0; i < 4; i++) {
+            if (solution.charAt(i) == guess.charAt(i)) {
+                bingo++;
+            } else {
+                Integer integer = temp.get(String.valueOf(solution.charAt(i)));
+                if (integer == null) {
+                    temp.put(String.valueOf(solution.charAt(i)), 1);
+                } else {
+                    temp.put(String.valueOf(solution.charAt(i)), ++integer);
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            if (solution.charAt(i) != guess.charAt(i)) {
+                Integer integer = temp.get(String.valueOf(guess.charAt(i)));
+                if (integer != null && integer>0) {
+                    fakeBingo++;
+                    temp.put(String.valueOf(guess.charAt(i)), --integer);
+                }
+            }
+        }
+        return new int[]{bingo, fakeBingo};
+    }
 }
