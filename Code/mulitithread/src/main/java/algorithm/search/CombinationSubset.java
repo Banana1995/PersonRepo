@@ -148,7 +148,7 @@ public class CombinationSubset {
 
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
-        dfsSubsets(nums,0,0,res,new LinkedList<>());
+        dfsSubsets(nums, 0, 0, res, new LinkedList<>());
         return res;
     }
 
@@ -163,7 +163,31 @@ public class CombinationSubset {
             }
             cur.push(nums[i]);
             res.add(new ArrayList<>(cur));
-            dfsSubsets(nums, depth + 1, i+1, res, cur);
+            dfsSubsets(nums, depth + 1, i + 1, res, cur);
+            cur.pop();
+        }
+    }
+
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        dfsSubsetsWithDup(res,nums,0,0,new LinkedList<>());
+        return res;
+    }
+
+
+    private void dfsSubsetsWithDup(List<List<Integer>> res, int[] nums, int start, int depth, LinkedList<Integer> cur) {
+        res.add(new ArrayList<>(cur));
+        if (depth == nums.length) {
+            return;
+        }
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            cur.push(nums[i]);
+            dfsSubsetsWithDup(res, nums, i + 1, depth + 1, cur);
             cur.pop();
         }
     }
