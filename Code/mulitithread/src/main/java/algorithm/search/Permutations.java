@@ -31,9 +31,35 @@ public class Permutations {
 
     public static void main(String[] args) {
         Permutations permutations = new Permutations();
-        List<List<Integer>> res = permutations.permuteUnique(new int[]{1, 1, 3});
+        List<String> res = permutations.letterCasePermutation("C");
         System.out.println(Arrays.toString(res.toArray()));
     }
 
+    public List<String> letterCasePermutation(String S) {
+        List<String> res = new ArrayList<>();
+        dfsLetterPermutation(res, 0, S.length(), S, new StringBuilder());
+        return res;
+    }
+
+    private void dfsLetterPermutation(List<String> res, int start, int length, String S, StringBuilder currentString) {
+        if (start == length) {
+            res.add(currentString.toString());
+            return;
+        }
+        char cur = S.charAt(start);
+        currentString.append(cur);
+//        if (currentString.length() == length) {
+//            res.add(currentString.toString());
+//            return;
+//        }
+        dfsLetterPermutation(res, start + 1, length, S, currentString);
+        if (!Character.isDigit(cur)) {
+//            currentString = new StringBuilder(currentString.substring(0, start));
+            currentString.setLength(start);
+            currentString.append(Character.isUpperCase(cur) ? Character.toLowerCase(cur) : Character.toUpperCase(cur));
+            dfsLetterPermutation(res, start + 1, length, S, currentString);
+        }
+
+    }
 
 }
