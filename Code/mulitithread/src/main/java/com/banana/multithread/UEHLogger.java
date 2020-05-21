@@ -1523,7 +1523,7 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         UEHLogger uehLogger = new UEHLogger();
         int[] square1 = new int[]{68, 130, 64};
         int[] square2 = new int[]{-230, 194, 7};
-        List<String> res = uehLogger.letterCombinations("");
+//        List<String> res = uehLogger.letterCombinations("");
 
     }
 
