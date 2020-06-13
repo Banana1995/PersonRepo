@@ -31,8 +31,8 @@ public class Permutations {
 
     public static void main(String[] args) {
         Permutations permutations = new Permutations();
-        int i = permutations.numSquarefulPerms(new int[]{65, 44, 5, 11});
-//        System.out.println(res);
+//        int i = permutations.numSquarefulPerms(new int[]{65, 44, 5, 11});
+//        System.out.println(re2s);
     }
 
     public List<String> letterCasePermutation(String S) {
