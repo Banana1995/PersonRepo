@@ -31,8 +31,8 @@ public class Permutations {
 
     public static void main(String[] args) {
         Permutations permutations = new Permutations();
-        List<String> res = permutations.letterCasePermutation("C");
-        System.out.println(Arrays.toString(res.toArray()));
+        int i = permutations.numSquarefulPerms(new int[]{65, 44, 5, 11});
+//        System.out.println(res);
     }
 
     public List<String> letterCasePermutation(String S) {
@@ -48,18 +48,145 @@ public class Permutations {
         }
         char cur = S.charAt(start);
         currentString.append(cur);
-//        if (currentString.length() == length) {
-//            res.add(currentString.toString());
-//            return;
-//        }
         dfsLetterPermutation(res, start + 1, length, S, currentString);
         if (!Character.isDigit(cur)) {
-//            currentString = new StringBuilder(currentString.substring(0, start));
             currentString.setLength(start);
             currentString.append(Character.isUpperCase(cur) ? Character.toLowerCase(cur) : Character.toUpperCase(cur));
             dfsLetterPermutation(res, start + 1, length, S, currentString);
         }
+    }
 
+    private int[][] gatherLen;
+    private int[] bestPath;
+    private int bestLen;
+    int[] path;
+
+    public String shortestSuperstring(String[] A) {
+        gatherLen = new int[A.length][A.length];
+        bestPath = new int[A.length];
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A.length; j++) {
+                gatherLen[i][j] = A[j].length();
+                for (int k = 0; k <= Math.min(A[i].length(), A[j].length()); k++) {
+                    if (A[i].substring(A[i].length() - k).equals(A[j].substring(0, k))) {
+                        gatherLen[i][j] = A[j].length() - k;
+                    }
+                }
+            }
+        }
+        path = new int[A.length];
+        bestLen = Integer.MAX_VALUE;
+        dfsShortestString(A, 0, path, 0, new boolean[A.length]);
+        StringBuilder ans = new StringBuilder(A[bestPath[0]]);
+        for (int i = 1; i < bestPath.length; i++) {
+            int a = bestPath[i - 1];
+            int b = bestPath[i];
+            ans.append(A[b].substring(A[b].length() - gatherLen[a][b]));
+        }
+        return ans.toString();
+    }
+
+    private void dfsShortestString(String[] A, int depth, int[] path, int curLen, boolean[] used) {
+        if (curLen >= bestLen) {
+            return;//剪枝
+        }
+        if (depth == A.length) {
+            bestLen = curLen;
+            bestPath = path.clone();
+            return;
+        }
+        for (int i = 0; i < A.length; i++) {
+            path[depth] = i;
+            if (used[i]) continue;
+            used[i] = true;
+            dfsShortestString(A, depth + 1, path, depth == 0 ? A[i].length() : curLen + gatherLen[path[depth - 1]][i], used);
+            used[i] = false;
+        }
+    }
+//
+//    private int ans = 0;
+//
+//    public int numSquarefulPerms(int[] A) {
+//        ans=0;
+//        Arrays.sort(A);
+//        dfsFindSquareFulPerms(A, 0, new LinkedList<>(), new boolean[A.length]);
+//        return ans;
+//    }
+
+
+    private void dfsFindSquareFulPerms(int[] A, int de, LinkedList<Integer> cur, boolean[] used) {
+        if (de == A.length) {
+            ans++;
+            return;
+        }
+        for (int i = 0; i < A.length; i++) {
+            if (used[i]) continue;
+            if (i > 0 && !used[i - 1] && A[i] == A[i - 1]) continue;
+            if (cur.size() > 0 && !isSquareFul(cur.peek(), A[i])) {
+                continue;
+            }
+            cur.push(A[i]);
+            used[i] = true;
+            dfsFindSquareFulPerms(A, de + 1, cur, used);
+            used[i] = false;
+            cur.pop();
+        }
+    }
+
+    private boolean isSquareFul(int a, int b) {
+        int c = (int) Math.sqrt(a + b);
+        return c * c == a + b;
+
+    }
+
+    private int appendSb(String curStr, StringBuilder stringBuilder) {
+        int index = stringBuilder.length();
+        int start = stringBuilder.length() > curStr.length() ? curStr.length() : stringBuilder.length();
+        int j = index - 1;
+        for (int i = start - 1; i >= 0; i--) {
+            if (stringBuilder.charAt(j) == curStr.charAt(i)) {
+                j--;
+            } else {
+                j = index - 1;
+                if (stringBuilder.charAt(j) == curStr.charAt(i)) {
+                    j--;
+                }
+            }
+        }
+        int sameLen = 0;
+        if (j != index - 1) {
+            sameLen = index - 1 - j;
+        }
+        stringBuilder.append(curStr.substring(sameLen, curStr.length()));
+        return index;
+    }
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int x) {
+            val = x;
+        }
+    }
+
+    private int ans = Integer.MIN_VALUE;
+
+    public int maxPathSum(TreeNode root) {
+        maxSum(root);
+        return ans;
+    }
+
+    private int maxSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = Math.max(0, maxSum(root.left));
+        int right = Math.max(0, maxSum(root.right));
+        int cur = left + right + root.val;
+        ans = cur > ans ? cur : ans;
+        return Math.max(left, right) + root.val;
     }
 
 }
