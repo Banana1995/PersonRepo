@@ -1330,10 +1330,10 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         sets.addAll(temp);
     }
 
-    public int multiply(int A, int B) {
-        HashMap<Integer, Integer> memo = new HashMap<>();
-        return getMultiplyValue(A, B, memo);
-    }
+//    public int multiply(int A, int B) {
+//        HashMap<Integer, Integer> memo = new HashMap<>();
+//        return getMultiplyValue(A, B, memo);
+//    }
 
     int getMultiplyValue(int A, int B, HashMap<Integer, Integer> memo) {
         if (B == 0) {
@@ -1521,14 +1521,10 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) {
         UEHLogger uehLogger = new UEHLogger();
-        int[][] te = new int[5][5];
-        te[0] = new int[]{1, 4, 7, 11, 15};
-        te[1] = new int[]{2, 5, 8, 12, 19};
-        te[2] = new int[]{3, 6, 9, 16, 22};
-        te[3] = new int[]{10, 13, 14, 17, 24};
-        te[4] = new int[]{18, 21, 23, 26, 30};
-        boolean res = uehLogger.searchMatrix(te, 5);
-        System.out.println(res);
+        int[] square1 = new int[]{68, 130, 64};
+        int[] square2 = new int[]{-230, 194, 7};
+//        List<String> res = uehLogger.letterCombinations("");
+
     }
 
     public int pileBox(int[][] box) {
@@ -1788,5 +1784,250 @@ public class UEHLogger implements Thread.UncaughtExceptionHandler {
         nums[a] = nums[b];
         nums[b] = temp;
     }
+
+    public int[] swapNumbers(int[] numbers) {
+        if (numbers[0] == numbers[1]) {
+            return numbers;
+        }
+        numbers[0] = numbers[0] ^ numbers[1];
+        numbers[1] = numbers[0] ^ numbers[1];
+        numbers[0] = numbers[0] ^ numbers[1];
+        return numbers;
+    }
+
+    public int trailingZeroes(int n) {
+        if (n < 2) return 0;
+        int count = 0;
+        while (n > 0) {
+            count += n / 5;
+            n = n / 5;
+        }
+        return count;
+    }
+
+    public int smallestDifference(int[] a, int[] b) {
+        Arrays.sort(a);
+        Arrays.sort(b);
+        long min = Integer.MAX_VALUE;
+        int i = 0;
+        int j = 0;
+        while (i < a.length && j < b.length) {
+            if (Math.abs((long) a[i] - (long) b[j]) < min) {
+                min = Math.abs((long) a[i] - (long) b[j]);
+            }
+            if (a[i] > b[j]) {
+                j++;
+            } else {
+                i++;
+            }
+        }
+        return (int) min;
+    }
+
+    public int maximum(int a, int b) {
+        int signa = sign(a);
+        int signb = sign(b);
+        int signc = sign(a - b);
+        int same_sign_a = signa ^ signb;//a,b符合相同为0  符号不同为1
+        int same_sign_c = flip(same_sign_a);//same_sign_a 的反向数
+        int k = same_sign_a * signa + same_sign_c * signc;//符合相同为signc，不同为signa
+        int q = flip(k);
+        return a * k + b * q;
+    }
+
+    //翻转符号位
+    private int flip(int a) {
+        return a ^ 1;
+    }
+
+    //负数返回0 正数返回a
+    private int sign(int a) {
+        return flip((a >> 31) & 0x01);//此处使用算术右移必须与0x01做与运算，不能与1做与运算
+    }
+
+    public int minus(int a, int b) {
+        return a + (-b);
+    }
+
+    public int multiply(int a, int b) {
+        int sameSign = ((a >> 31) ^ (b >> 31)) & 1;//符号位相同为0，相异为1
+        long absA = Math.abs((long) a) < Math.abs((long) b) ? Math.abs((long) a) : Math.abs((long) b);
+        long absB = Math.abs((long) a) < Math.abs((long) b) ? Math.abs((long) b) : Math.abs((long) a);
+        long res = absB;
+        int temp = 1;
+        while (absA > temp) {
+            if (absA > temp + temp) {
+                res += res;
+                temp += temp;
+            } else {
+                res += absB;
+                temp++;
+            }
+        }
+        return sameSign == 0 ? (int) res : (int) -res;
+    }
+
+    public int divide(int a, int b) {
+        if (a == 0x80000000) {
+            return a;
+        }
+        int sameSign = ((a >> 31) ^ (b >> 31)) & 1;//符号位相同为0，相异为1
+        int absA = Math.abs(a);
+        int absB = Math.abs(b);
+        int res = 0;
+        int index = 0;
+        int[] temp = new int[32];
+        int[] bit = new int[32];
+        temp[0] = absB;
+        bit[0] = 1;
+        for (int i = 1; i < temp.length; i++) {
+            if (temp[i - 1] + temp[i - 1] > absA || temp[i - 1] + temp[i - 1] < 0) break;
+            temp[i] = temp[i - 1] + temp[i - 1];
+            bit[i] = bit[i - 1] + bit[i - 1];
+            index++;
+        }
+        for (int i = index; i >= 0; i--) {
+            if (absA >= temp[i]) {
+                absA = minus(absA, temp[i]);
+                res += bit[i];
+            }
+
+        }
+        return sameSign == 0 ? res : -res;
+    }
+
+
+    public int maxAliveYear(int[] birth, int[] death) {
+        Arrays.sort(birth);
+        Arrays.sort(death);
+        int length = birth.length;
+        int maxLivedYear = 0;
+        int i = 0;
+        int j = 0;
+        int aliveCount = 0;
+        int birthCount = 0;
+        int deathCount = 0;
+        while (i < length) {
+            if (birth[i] <= death[j]) {
+                birthCount++;
+                if (birthCount - deathCount > aliveCount) {
+                    aliveCount = birthCount - deathCount;
+                    maxLivedYear = birth[i];
+                }
+                i++;
+            } else if (j < length) {
+                if (birthCount - deathCount > aliveCount) {
+                    aliveCount = birthCount - deathCount;
+                    maxLivedYear = death[j];
+                }
+                deathCount++;
+                j++;
+            }
+        }
+        return maxLivedYear;
+    }
+
+    public int[] divingBoard(int shorter, int longer, int k) {
+        int[] ans = new int[k + 1];
+        if (k == 0) {
+            return new int[0];
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+        for (int i = 0; i <= k; i++) {
+            ans[i] = shorter * (k - i) + longer * i;
+        }
+        return ans;
+    }
+
+
+    public double[] cutSquares(int[] square1, int[] square2) {
+        double[] res = new double[4];
+        int x1 = square1[0];
+        int x2 = square2[0];
+        int y1 = square1[1];
+        int y2 = square2[1];
+        double center1x = (x1 + x1 + square1[2]) / 2d;
+        double center1y = (y1 + y1 + square1[2]) / 2d;
+        double center2x = (x2 + x2 + square2[2]) / 2d;
+        double center2y = (y2 + y2 + square2[2]) / 2d;
+        if (center1x == center2x) {
+            res[0] = center1x;
+            res[1] = y1 < y2 ? y1 : y2;
+            res[2] = center2x;
+            res[3] = y1 + square1[2] < y2 + square2[2] ? y2 + square2[2] : y1 + square1[2];
+            return res;
+        }
+        if (center1y == center2y) {
+            res[0] = x1 < x2 ? x1 : x2;
+            res[1] = center1y;
+            res[2] = x1 + square1[2] < x2 + square2[2] ? x2 + square2[2] : x1 + square1[2];
+            res[3] = center2y;
+            return res;
+        }
+        //斜率
+        double rate = (center2y - center1y) / (center2x - center1x);
+        //截距
+        double dis = center1y - rate * center1x;
+        if (Math.abs(rate) > 1) {
+            //交点在上下边
+            int bottomy = y1 < y2 ? y1 : y2;
+            int topy = y1 + square1[2] < y2 + square2[2] ? y2 + square2[2] : y1 + square1[2];
+            double bottomx = bottomy / rate;
+            double topx = topy / rate;
+            //point1：(y1+square[2]-dis)/rate , y1+square1[2]   ponit2:(y1-dis)/rate ,y1
+            //point3: (y2+square2[2]-dis)/rate ,y2+square2[2]   point4:(y2-dis)/rate ,y2
+            res[0] = Math.min(Math.min((y1 + square1[2] - dis) / rate, (y1 - dis) / rate), Math.min((y2 + square2[2] - dis) / rate, (y2 - dis) / rate));
+            res[1] = res[0] * rate + dis;
+            res[2] = Math.max(Math.max((y1 + square1[2] - dis) / rate, (y1 - dis) / rate), Math.max((y2 + square2[2] - dis) / rate, (y2 - dis) / rate));
+            res[3] = res[2] * rate + dis;
+
+        } else {
+            //交点在左右两边
+            int leftx = x1 < x2 ? x1 : x2;
+            int rightx = x1 + square1[2] < x2 + square2[2] ? x2 + square2[2] : x1 + square1[2];
+            double topy = leftx * rate;
+            double bottomy = rightx * rate;
+            res[0] = leftx;
+            res[1] = topy + dis;
+            res[2] = rightx;
+            res[3] = bottomy + dis;
+        }
+        return res;
+    }
+
+//    public int numDecodings(String s) {
+//
+//    }
+
+    public int[] masterMind(String solution, String guess) {
+        int bingo = 0;
+        int fakeBingo = 0;
+        HashMap<String, Integer> temp = new HashMap<>();
+        for (int i = 0; i < 4; i++) {
+            if (solution.charAt(i) == guess.charAt(i)) {
+                bingo++;
+            } else {
+                Integer integer = temp.get(String.valueOf(solution.charAt(i)));
+                if (integer == null) {
+                    temp.put(String.valueOf(solution.charAt(i)), 1);
+                } else {
+                    temp.put(String.valueOf(solution.charAt(i)), ++integer);
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            if (solution.charAt(i) != guess.charAt(i)) {
+                Integer integer = temp.get(String.valueOf(guess.charAt(i)));
+                if (integer != null && integer > 0) {
+                    fakeBingo++;
+                    temp.put(String.valueOf(guess.charAt(i)), --integer);
+                }
+            }
+        }
+        return new int[]{bingo, fakeBingo};
+    }
+
 
 }
