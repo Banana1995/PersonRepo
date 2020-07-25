@@ -1,9 +1,6 @@
 package algorithm.twopoint;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TwoPointFollowup {
 
@@ -126,10 +123,10 @@ public class TwoPointFollowup {
         dummy.next = head;
         ListNode i = dummy;
         ListNode j = dummy;
-        for (int k = n; k >=0; k--) {
+        for (int k = n; k >= 0; k--) {
             j = j.next;
         }
-        while ( j.next != null) {
+        while (j.next != null) {
             j = j.next;
             i = i.next;
         }
@@ -140,8 +137,11 @@ public class TwoPointFollowup {
     public static void main(String[] args) {
         String s = "ababffeezzz";
         TwoPointFollowup twoPointFollowup = new TwoPointFollowup();
-        int sna = twoPointFollowup.lengthOfLongestSubstringKDistinct(s, 2);
-        System.out.println(sna);
+        int[] aa = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
+//        int sna = twoPointFollowup.findKthLargest(aa, 4);
+//        System.out.println(sna);
 
     }
+
+
 }

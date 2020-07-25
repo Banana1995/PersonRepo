@@ -1,6 +1,5 @@
-package algorithm;
+package designpattern;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class WordsFrequency {
