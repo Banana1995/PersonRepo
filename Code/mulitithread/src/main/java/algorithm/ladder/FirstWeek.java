@@ -13,8 +13,6 @@ public class FirstWeek {
         int[] B = new int[]{2, 4, 6};
         int res = firstWeek.kthSmallestSum(A, B,3);
         System.out.println(res);
-
-
     }
 
     public int kthSmallest(int[][] matrix, int k) {
