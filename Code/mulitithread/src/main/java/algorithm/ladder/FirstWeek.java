@@ -1,5 +1,10 @@
 package algorithm.ladder;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -7,13 +12,14 @@ import java.util.Set;
 
 public class FirstWeek {
 
-    public static void main(String[] args) {
-        FirstWeek firstWeek = new FirstWeek();
-        int[] A = new int[]{1, 7, 11};
-        int[] B = new int[]{2, 4, 6};
-        int res = firstWeek.kthSmallestSum(A, B,3);
-        System.out.println(res);
-    }
+//    public static void main(String[] args) {
+//        FirstWeek firstWeek = new FirstWeek();
+//        int[] A = new int[]{1, 7, 11};
+//        int[] B = new int[]{2, 4, 6};
+//        int res = firstWeek.kthSmallestSum(A, B,3);
+//        System.out.println(res);
+//    }
+
 
     public int kthSmallest(int[][] matrix, int k) {
         PriorityQueue<Node> queue = new PriorityQueue<>(new Comparator<Node>() {

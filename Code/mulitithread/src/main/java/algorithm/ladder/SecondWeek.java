@@ -7,16 +7,25 @@ public class SecondWeek {
 
     public static void main(String[] args) {
         SecondWeek secondWeek = new SecondWeek();
-//        secondWeek.addWord("ran");
-        secondWeek.addWord("rune");
-        secondWeek.addWord("runner");
-        secondWeek.addWord("runs");
-        secondWeek.addWord("add");
-        secondWeek.addWord("adds");
-        secondWeek.addWord("adder");
-        secondWeek.addWord("addee");
-        boolean res = secondWeek.search(".......");
-        System.out.println(res);
+        char[][] board = new char[3][4];
+        board[0][0] = 'd';
+        board[0][1] = 'o';
+        board[0][2] = 'a';
+        board[0][3] = 'f';
+
+        board[1][0] = 'a';
+        board[1][1] = 'g';
+        board[1][2] = 'a';
+        board[1][3] = 'i';
+
+        board[2][0] = 'd';
+        board[2][1] = 'c';
+        board[2][2] = 'a';
+        board[2][3] = 'n';
+        List<String> words = new ArrayList<>();
+        words.add("dog");
+        List<String> res = secondWeek.wordSearchII(board, words);
+        System.out.println(Arrays.toString(res.toArray()));
     }
 
     //son_id,father_id
@@ -68,20 +77,20 @@ public class SecondWeek {
 //    }
 
 
-    private Map<String, List<Integer>> getEmailToID(List<List<String>> accounts) {
-        Map<String, List<Integer>> emailIdMap = new HashMap<>();
-        int i = 0;
-        for (List<String> account : accounts) {
-            for (int j = 1; j < account.size(); j++) {
-                String emailId = account.get(j);
-                List<Integer> idSet = emailIdMap.getOrDefault(emailId, new ArrayList<>());
-                idSet.add(i);
-                emailIdMap.put(emailId, idSet);
-            }
-            i++;
-        }
-        return emailIdMap;
-    }
+//    private Map<String, List<Integer>> getEmailToID(List<List<String>> accounts) {
+//        Map<String, List<Integer>> emailIdMap = new HashMap<>();
+//        int i = 0;
+//        for (List<String> account : accounts) {
+//            for (int j = 1; j < account.size(); j++) {
+//                String emailId = account.get(j);
+//                List<Integer> idSet = emailIdMap.getOrDefault(emailId, new ArrayList<>());
+//                idSet.add(i);
+//                emailIdMap.put(emailId, idSet);
+//            }
+//            i++;
+//        }
+//        return emailIdMap;
+//    }
 
     //find root father id
 //    private int find(int id) {
@@ -312,6 +321,95 @@ public class SecondWeek {
             return a;
         }
         return father[a] = findFather(father[a]);
+    }
+
+
+    /**
+     * @param board: A list of lists of character
+     * @param words: A list of string
+     * @return: A list of string
+     */
+    public List<String> wordSearchII(char[][] board, List<String> words) {
+        // write your code here
+        TrieTree tree = new TrieTree();
+        for (String word : words) {
+            //维护字典树
+            tree.insert(word);
+        }
+        int n = board.length;
+        int m = board[0].length;
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                //dfs遍历矩阵搜索单词，将其与单词树中的单词进行匹配
+                dfsSearch(i, j, board, res, tree.root);
+            }
+        }
+        return res;
+
+    }
+
+    public void dfsSearch(int x, int y, char[][] board, List<String> res, TreeNode cur) {
+        char temp = board[x][y];
+        if (!cur.children.containsKey(temp)) {
+            return;
+        }
+        TreeNode child = cur.children.get(temp);
+        if (child.word != null) {
+            res.add(child.word);
+        }
+        for (int i = 0; i < 4; i++) {
+            int nextx = x + dx[i];
+            int nexty = y + dy[i];
+            if (inside(nextx, nexty, board)) {
+                board[x][y] = 0;
+                dfsSearch(nextx, nexty, board, res, child);
+                board[x][y] = temp;
+            }
+        }
+
+
+    }
+
+    private boolean inside(int nextx, int nexty, char[][] board) {
+        int n = board.length;
+        int m = board[0].length;
+        if (nextx >= 0 && nexty >= 0 && nextx < n && nexty < m && board[nextx][nexty] != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private int[] dx = new int[]{0, 1, 0, -1};
+    private int[] dy = new int[]{1, 0, -1, 0};
+
+    public class TrieTree {
+        private TreeNode root = new TreeNode();
+
+        public void insert(String word) {
+            TreeNode cur = root;
+            char[] chars = word.toCharArray();
+            for (char aChar : chars) {
+                if (cur.children.containsKey(aChar)) {
+                    cur = cur.children.get(aChar);
+                } else {
+                    TreeNode node = new TreeNode();
+                    cur.children.put(aChar, node);
+                    cur = node;
+                }
+            }
+            cur.word = word;
+        }
+
+
+    }
+
+    public class TreeNode {
+
+        private String word;
+
+        private Map<Character, TreeNode> children = new HashMap<>();
+
     }
 
 }
