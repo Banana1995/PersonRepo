@@ -87,8 +87,8 @@ public class ThridWeek {
         ThridWeek thridWeek = new ThridWeek();
 //        String data = "[[12,13,0,12],[13,4,13,12],[13,8,10,12],[12,13,12,12],[13,13,13,13]]";
 //        int[][] test = AlgorithmUtil.praseMatrix(data);
-        int[] ta = new int[]{5, 5, 1, 7, 1, 1, 5, 2, 7, 6};
-        int i = thridWeek.largestRectangleArea(ta);
+        int[] ta = new int[]{2, 5, 6, 0, 3, 1};
+        TreeNode i = thridWeek.maxTree(ta);
         System.out.println(i);
     }
 
@@ -186,7 +186,6 @@ public class ThridWeek {
         return sum;
     }
 
-
     public int largestRectangleArea(int[] heights) {
         Stack<Integer> mononicStack = new Stack<>();
         if (heights == null || heights.length <= 0) {
@@ -205,4 +204,95 @@ public class ThridWeek {
         }
         return area;
     }
+
+    public int maximalRectangle(boolean[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+        int[] height = new int[columns];//每行的高度
+        int area = 0;
+        for (boolean[] booleans : matrix) {
+
+            for (int j = 0; j < columns; j++) {
+                height[j] = booleans[j] ? height[j] + 1 : 0;//当前点为true时，则该点高度为原先的高度+1
+            }
+            Stack<Integer> monoStack = new Stack<>();
+            for (int j = 0; j <= height.length; j++) {
+                int curHeight = j == height.length ? -1 : height[j];
+                while (!monoStack.isEmpty() && curHeight <= height[monoStack.peek()]) {
+                    int topIndex = monoStack.pop();//栈顶元素的数组下标
+                    int weith = monoStack.isEmpty() ? j : j - monoStack.peek() - 1; //宽度为:栈顶元素的左边界到右边界(stack.peek,j),即j-stack.peek-1
+                    int heig = height[topIndex];//高度为栈顶元素的高度
+                    area = Math.max(area, weith * heig);
+                }
+                monoStack.add(j);
+            }
+        }
+        return area;
+    }
+
+    public class TreeNode {
+        public int val;
+        public TreeNode left, right;
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+    }
+
+    public TreeNode maxTree(int[] A) {
+        if (A == null || A.length == 0) {
+            return null;
+        }
+        Stack<TreeNode> monotonicStack = new Stack<>();
+        //2, 5, 6, 0, 3, 1
+        for (int i = 0; i < A.length; i++) {
+            TreeNode cur = new TreeNode(A[i]);
+            while (!monotonicStack.isEmpty() && A[i] > monotonicStack.peek().val) {
+                TreeNode lastNode = monotonicStack.pop();
+                if (!monotonicStack.isEmpty() && A[i] > monotonicStack.peek().val) {
+                    monotonicStack.peek().right = lastNode;
+                } else {
+                    cur.left = lastNode;
+                }
+            }
+            monotonicStack.add(cur);
+        }
+        TreeNode root = monotonicStack.peek();
+        while (!monotonicStack.isEmpty()) {
+            root = monotonicStack.pop();
+            if (!monotonicStack.isEmpty()) {
+                monotonicStack.peek().right = root;
+                root = monotonicStack.peek();
+            }
+        }
+        return root;
+
+    }
+
+    public int[] medianII(int[] nums) {
+        PriorityQueue<Integer> maxQueue = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> minQueue = new PriorityQueue<>();
+        List<Integer> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            maxQueue.offer(nums[i]);
+            minQueue.offer(maxQueue.poll());
+            if (maxQueue.size() < minQueue.size()) {
+                maxQueue.offer(minQueue.poll());
+            }
+            res.add(maxQueue.peek());
+        }
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            ans[i] = res.get(i);
+        }
+        return ans;
+    }
+
 }
