@@ -462,5 +462,28 @@ public class SeventhWeek {
         return dis;
     }
 
-
+    public int longestPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        char[] chars = s.toCharArray();
+        Map<Character, Integer> charmap = new HashMap<>();
+        int count = 0;
+        for (char aChar : chars) {
+            if (charmap.containsKey(aChar)) {
+                Integer acharcount = charmap.get(aChar);
+                acharcount--;
+                if (acharcount == 0) {
+                    charmap.remove(aChar);
+                }
+                count += 2;
+            } else {
+                charmap.put(aChar, 1);
+            }
+        }
+        if (charmap.size() > 0) {
+            count++;
+        }
+        return count;
+    }
 }
