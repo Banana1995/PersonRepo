@@ -1,6 +1,4 @@
-package algorithm.ladder;
-
-import algorithm.AlgorithmUtil;
+package algorithm.ladder.enforce;
 
 import java.util.*;
 

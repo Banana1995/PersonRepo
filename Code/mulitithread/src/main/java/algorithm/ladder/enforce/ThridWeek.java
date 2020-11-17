@@ -1,4 +1,4 @@
-package algorithm.ladder;
+package algorithm.ladder.enforce;
 
 import org.jetbrains.annotations.NotNull;
 
