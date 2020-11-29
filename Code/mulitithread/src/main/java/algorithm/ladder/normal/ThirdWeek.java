@@ -8,11 +8,11 @@ import java.util.*;
 public class ThirdWeek {
     public static void main(String[] args) {
         ThirdWeek thirdWeek = new ThirdWeek();
-        int[] data = new int[]{1, 2, 3, 4};
-        int target = 5;
-        int k = 2;
-        List<List<Integer>> res = thirdWeek.kSumII(data, k, target);
-        log.info("当前结果为：{}", Arrays.toString(res.toArray()));
+//        String data = "abccba";
+//        char[] chars = data.toCharArray();
+        int[] data = new int[]{1, 2, 2, 1, 3, 4};
+        int val = thirdWeek.firstUniqueNumber(data, 3);
+        log.info("当前结果为：{}", val);
     }
 
     public class TreeNode {
@@ -179,9 +179,225 @@ public class ThirdWeek {
             }
             combine.push(A[i]);
             dfsCombineSum(A, i + 1, A[i] + sum, k, depth + 1, target, res, combine);
+
             combine.pop();
+        }
+
+    }
+
+    public void rotateString(char[] str, int offset) {
+        if (str == null || str.length == 0) {
+            return;
+        }
+        int start = offset % str.length;
+        for (int i = str.length - start; i < str.length; i++) {
+            int k = i;
+            for (int j = i - 1; j >= i - (str.length - start); j--) {
+                swap(str, k, j);
+                k--;
+            }
         }
     }
 
+    private void swap(char[] str, int a, int b) {
+        char temp = str[a];
+        str[a] = str[b];
+        str[b] = temp;
+    }
 
+    public int firstUniqueNumber(int[] nums, int number) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        HashMap<Integer, Integer> hash = new HashMap<>();
+        Queue<Integer> proiQueue = new PriorityQueue<>();
+        boolean hashend = false;
+        for (int i = 0; i < nums.length; i++) {
+
+            if (hash.containsKey(nums[i])) {
+                int oriIndex = hash.remove(nums[i]);
+                proiQueue.remove(oriIndex);
+            } else {
+                hash.put(nums[i], i);
+                proiQueue.add(i);
+            }
+            if (number == nums[i]) {
+                hashend = true;
+                break;
+            }
+        }
+        if (hash.size() == 0 || !hashend) {
+            return -1;
+        }
+        int resIndex = proiQueue.peek();
+        return nums[resIndex];
+    }
+
+    class RandomizedSet {
+        private Map<Integer, Integer> hashData;
+        private Random random;
+        private ArrayList<Integer> dataList;
+
+        public RandomizedSet() {
+            // do intialization if necessary
+            hashData = new HashMap<>();
+            dataList = new ArrayList<>();
+            random = new Random();
+        }
+
+
+        /*
+         * @param val: a value to the set
+         * @return: true if the set did not already contain the specified element or false
+         */
+        public boolean insert(int val) {
+            if (hashData.containsKey(val)) {
+                return false;
+            }
+            dataList.add(val);
+            hashData.put(val, dataList.size() - 1);
+            return true;
+        }
+
+        /*
+         * @param val: a value from the set
+         * @return: true if the set contained the specified element or false
+         */
+        public boolean remove(int val) {
+            // write your code here
+            if (hashData.containsKey(val)) {
+                int index = hashData.remove(val);
+                if (index < dataList.size() - 1) {
+                    //将index元素与最后一个元素置换  这样才能O（1）删除list中的元素
+                    int last = dataList.get(dataList.size() - 1);
+                    dataList.set(index, last);
+                    hashData.put(last, index);
+                    dataList.remove(dataList.size() - 1);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /*
+         * @return: Get a random element from the set
+         */
+        public int getRandom() {
+            // write your code here
+
+            int i = random.nextInt(dataList.size());
+            return dataList.get(i);
+        }
+    }
+
+    public int nthUglyNumber(int n) {
+        Queue<Long> priorityQueue = new PriorityQueue<>();
+        HashSet<Long> inQ = new HashSet<>();
+        Long[] primes = new Long[3];
+        primes[0] = Long.valueOf(2);
+        primes[1] = Long.valueOf(3);
+        primes[2] = Long.valueOf(5);
+        priorityQueue.offer(1L);
+        inQ.add(1L);
+        for (int i = n - 1; i > 0; i--) {
+            Long top = priorityQueue.poll();
+            for (int j = 0; j < 3; j++) {
+                long nextPrime = top * primes[i];
+                if (!inQ.contains(nextPrime)) {
+                    priorityQueue.offer(nextPrime);
+                    inQ.add(nextPrime);
+                }
+            }
+        }
+        return priorityQueue.peek().intValue();
+    }
+
+    class LRUCache {
+        class ListNode {
+            public int key;
+            public int value;
+            public ListNode next;
+
+            ListNode(int key, int val) {
+                this.key = key;
+                this.value = val;
+            }
+        }
+
+        HashMap<Integer, ListNode> key2prev;
+        private ListNode dummy;
+        private ListNode tail;
+        private int capacity;
+        private int size;
+
+        /*
+         * @param capacity: An integer
+         */
+        public LRUCache(int capacity) {
+            key2prev = new HashMap<>();
+            dummy = new ListNode(0, 0);
+            this.tail = this.dummy;
+            this.capacity = capacity;
+        }
+
+        private void move2tail(int key) {
+            if (!key2prev.containsKey(key)) {
+                return;
+            }
+            ListNode prev = key2prev.get(key);
+            ListNode curt = prev.next;
+            if (curt == tail) {
+                return;
+            }
+            prev.next = curt.next;
+            if (prev.next != null) {
+                key2prev.put(prev.next.key, prev);
+            }
+            tail.next = curt;
+            key2prev.put(curt.key, tail);
+            tail = curt;
+        }
+
+        /*
+         * @param key: An integer
+         * @return: An integer
+         */
+        public int get(int key) {
+            if (!key2prev.containsKey(key)) {
+                return -1;
+            }
+            move2tail(key);
+            return tail.value;
+        }
+
+        /*
+         * @param key: An integer
+         * @param value: An integer
+         * @return: nothing
+         */
+        public void set(int key, int value) {
+            if (get(key) != -1) {
+                //已经存在，则更新value值
+                ListNode prev = key2prev.get(key);
+                prev.next.value = value;
+                return;
+            }
+            if (size < capacity) {
+                size++;
+                ListNode cur = new ListNode(key, value);
+                tail.next = cur;
+                key2prev.put(key, tail);
+                tail = cur;
+                return;
+            }
+
+            ListNode first = dummy.next;
+            key2prev.remove(first.key);
+            //替换first节点
+            first.key = key;
+            first.value = value;
+            key2prev.put(key, dummy);
+            move2tail(key);
+        }
+    }
 }
