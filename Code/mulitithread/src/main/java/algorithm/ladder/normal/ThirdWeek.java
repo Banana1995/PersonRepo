@@ -1,5 +1,6 @@
 package algorithm.ladder.normal;
 
+import algorithm.AlgorithmUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -10,8 +11,9 @@ public class ThirdWeek {
         ThirdWeek thirdWeek = new ThirdWeek();
 //        String data = "abccba";
 //        char[] chars = data.toCharArray();
-        int[] data = new int[]{1, 2, 2, 1, 3, 4};
-        boolean val = thirdWeek.isMatch2("aab", "c*a*b");
+        int[][] data = AlgorithmUtil.praseMatrix("[[1],[2,3]]");
+//        1%3
+        int val = thirdWeek.minimumTotal(data);
         log.info("当前结果为：{}", val);
     }
 
@@ -545,4 +547,97 @@ public class ThirdWeek {
         }
         return dp[m][n];
     }
+
+    private static int[] dx = new int[]{1, -1, 2, -2};
+    private static int[] dy = new int[]{2, 2, 1, 1};
+
+    public int shortestPath2(boolean[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return -1;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        dp[0][0] = 0;
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                if (grid[i][j]) {
+                    continue;
+                }
+                for (int k = 0; k < 4; k++) {
+                    int prevx = i - dx[k];
+                    int prevy = j - dy[k];
+                    if (!inBound(prevx, prevy, m, n) && dp[prevx][prevy] != Integer.MAX_VALUE) {
+                        dp[i][j] = Math.min(dp[i][j], dp[prevx][prevy] + 1);
+                    }
+                }
+            }
+        }
+        if (dp[m - 1][n - 1] == Integer.MAX_VALUE) {
+            return -1;
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    private boolean inBound(int x, int y, int xlen, int ylen) {
+        if (x >= 0 && x < xlen && y >= 0 && y < ylen) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private static int[] ddx = new int[]{-1, -1, -1};
+    private static int[] ddy = new int[]{-1, 0, 1};
+
+    public int minimumTotal(int[][] triangle) {
+//        dp[i][j] :从顶部到第[i][j]位置的最小路径和
+//        dp[i][j] = min(dp[i-1][j],dp[i-1][j-1],dp[i-1][j+1]) + nums[i][j]
+        if (triangle == null || triangle.length == 0 || triangle[0].length == 0) {
+            return 0;
+        }
+        int m = triangle.length;
+        int n = triangle[m - 1].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j > i) {
+                    continue;
+                }
+                if (i == 0 && j == 0) {
+                    dp[i][j] = triangle[i][j];
+                } else {
+                    for (int k = 0; k < 3; k++) {
+                        int prex = i + ddx[k];
+                        int prey = j + ddy[k];
+                        if (inTraingle(prex, prey)) {
+                            dp[i][j] = Math.min(dp[i][j], dp[prex][prey]);
+                        }
+                    }
+                    dp[i][j] = dp[i][j] + triangle[i][j];
+                }
+            }
+        }
+        Arrays.sort(dp[m - 1]);
+        return dp[m - 1][0];
+    }
+
+    private boolean inTraingle(int prex, int prey) {
+        if (prex >= 0 && prey >= 0 && prey <= prex) {
+            return true;
+        }
+        return false;
+    }
+
+
 }
