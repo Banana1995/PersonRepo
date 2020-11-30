@@ -11,7 +11,7 @@ public class ThirdWeek {
 //        String data = "abccba";
 //        char[] chars = data.toCharArray();
         int[] data = new int[]{1, 2, 2, 1, 3, 4};
-        int val = thirdWeek.firstUniqueNumber(data, 3);
+        boolean val = thirdWeek.isMatch2("aab", "c*a*b");
         log.info("当前结果为：{}", val);
     }
 
@@ -399,5 +399,150 @@ public class ThirdWeek {
             key2prev.put(key, dummy);
             move2tail(key);
         }
+    }
+
+    public int climbStairs2(int n) {
+        if (n == 0) {
+            return 1;
+        }
+        //dp[i] = dp[i-1] + dp[i-2] + dp[i-3] + 1
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 1; i <= n; i++) {
+            if (i < 2) {
+                dp[i] = dp[i - 1] + 1;
+            } else if (i < 3) {
+                dp[i] = dp[i - 1] + dp[i - 2] + 1;
+            } else {
+                dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3] + 1;
+            }
+        }
+        return dp[n];
+    }
+
+    public int wordBreak3(String s, Set<String> dict) {
+        //dp[i][j] = sum(k = i-> j)(dp[i][k] * dp[k][j])
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int n = s.length();
+        String lowers = s.toLowerCase();
+        Set<String> lowerDict = new HashSet<>();
+        for (String dic : dict) {
+            lowerDict.add(dic.toLowerCase());
+        }
+        int[][] dp = new int[n][n];
+        //dp初始化
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                String substr = lowers.substring(i, j + 1);//左闭右开
+                if (lowerDict.contains(substr)) {
+                    dp[i][j] = 1;
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = i; k < j; k++) {
+                    dp[i][j] += dp[i][k] * dp[k + 1][j];
+                }
+            }
+        }
+        return dp[0][n];
+    }
+
+    public List<String> wordBreak(String s, Set<String> wordDict) {
+        Map<String, List<String>> stringListMap = new HashMap<>();
+        return wordBreakHelper(s, wordDict, stringListMap);
+    }
+
+    public List<String> wordBreakHelper(String s, Set<String> dict, Map<String, List<String>> stringListMap) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (stringListMap.containsKey(s)) {
+            return stringListMap.get(s);
+        }
+        List<String> res = new ArrayList<>();
+        for (int i = 1; i < s.length(); i++) {
+            String prefix = s.substring(0, i);
+            if (!dict.contains(prefix)) {
+                continue;
+            }
+            String suffix = s.substring(i);
+            List<String> suffixBreaks = wordBreakHelper(suffix, dict, stringListMap);
+            for (String suffixBreak : suffixBreaks) {
+                String combine = prefix + " " + suffixBreak;
+                res.add(combine);
+            }
+        }
+        stringListMap.put(s, res);
+        return res;
+    }
+
+    public boolean isMatch(String ss, String pp) {
+        int m = ss.length();
+        int n = pp.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    if (pp.charAt(j - 1) == '*') {
+                        dp[i][j] = dp[i][j - 1];
+                    }
+                } else if (j == 0) {
+                    dp[i][j] = false;
+                } else {
+                    if (pp.charAt(j - 1) == '*') {
+                        dp[i][j] = (dp[i - 1][j] || dp[i][j - 1]) || dp[i - 1][j - 1];
+                    } else if (ss.charAt(i - 1) == pp.charAt(j - 1) || pp.charAt(j - 1) == '?') {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    }
+                }
+
+
+            }
+        }
+        return dp[m][n];
+    }
+
+    public boolean isMatch2(String s, String p) {
+        if (s == null) {
+            return false;
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    if (p.charAt(j - 1) == '*') {
+                        dp[i][j] = dp[i][j - 2];
+                    }
+                } else if (j == 0) {
+                    dp[i][j] = false;
+                } else {
+                    if (p.charAt(j - 1) == '*') {
+                        //*匹配 0 个字母
+                        dp[i][j] = dp[i][j - 2];
+                        //*匹配多个字母
+                        if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
+                            dp[i][j] |= dp[i - 1][j];
+                        }
+                    } else {
+                        if (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1)) {
+                            dp[i][j] = dp[i - 1][j - 1];
+                        }
+                    }
+                }
+            }
+        }
+        return dp[m][n];
     }
 }
