@@ -23,11 +23,15 @@ public class FirstWeek {
 
     }
 
-    class TreeNode {
+    class TreeNode implements Comparator {
 
         private String word;
         private Map<Character, TreeNode> children = new HashMap<>();
 
+        @Override
+        public int compare(Object o1, Object o2) {
+            return 0;
+        }
     }
 
     class TrieTree {
@@ -46,6 +50,23 @@ public class FirstWeek {
                 }
             }
             cur.word = wor;
+        }
+    }
+
+    class Tweet {
+        public int id;
+        public int user_id;
+        public String text;
+
+    }
+
+    class Node {
+        private int time;
+        private Tweet tweet;
+
+        public Node(int time, Tweet tweet) {
+            this.time = time;
+            this.tweet = tweet;
         }
     }
 
