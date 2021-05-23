@@ -1,13 +1,12 @@
-import com.google.common.collect.Queues;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 
-public class MultiThread extends Thread{
+@Slf4j
+public class MultiThread extends Thread {
 
     private ExecutorService executorService;
 
@@ -16,16 +15,136 @@ public class MultiThread extends Thread{
     private LinkedBlockingQueue<String> queue;
 
     public static void main(String[] args) {
-        char a = 'A'+655;
-        char d = '\u0041';
-        String b = "A";
-        Thread dd = new Thread();
-        int[] aa = {1};
-        int i , x, y =0;
-        String c = String.valueOf(2);
+
+        MultiThread multiThread = new MultiThread();
+        boolean res = multiThread.wordPatternMatch("d", "ef");
+        System.out.println(res);
     }
 
+    public boolean wordPatternMatch(String pattern, String str) {
+        if (pattern == null || pattern.length() == 0) {
+            return false;
+        }
+        Map<Character, String> charMap = new HashMap<>();
+        Set<String> matchStrSet = new HashSet<>();
+        return dfsDetect(pattern, str, charMap, matchStrSet);
+    }
+
+    private boolean dfsDetect(String pattern, String str, Map<Character, String> charMap,
+                              Set<String> matchStrSet) {
+        if (str.isEmpty() && pattern.isEmpty()) {
+            return true;
+        }
+        if (str.isEmpty() || pattern.isEmpty()) {
+            return false;
+        }
+        char curp = pattern.charAt(0);
+        if (charMap.containsKey(curp)) {
+            String curReplceStr = charMap.get(curp);
+            //当前字符已经有了匹配项了
+            return dfsDetect(pattern.substring(1, pattern.length()),
+                    str.substring(curReplceStr.length(), str.length()),
+                    charMap,
+                    matchStrSet);
+        }
+        //当前字符没有匹配项
+        for (int i = 1; i < str.length(); i++) {
+            String curRep = str.substring(0, i);
+            //此处需要检测curRep是否之前已经有过匹配项
+            //不存在两个p字符对应同一段str的情况
+            if (matchStrSet.contains(curRep)) {
+                continue;
+            }
+            charMap.put(curp, curRep);
+            matchStrSet.add(curRep);
+            boolean match = dfsDetect(
+                    pattern.substring(1, pattern.length()),
+                    str.substring(curRep.length(), str.length()),
+                    charMap,
+                    matchStrSet
+            );
+            if (match) {
+                return true;
+            }
+            matchStrSet.remove(curRep);
+            charMap.remove(curp);
+        }
+        return false;
+    }
+
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        if (nums == null) {
+            return new ArrayList<>();
+        }
+
+        //dp:nums中的值与之对应的最大的因子子集个数
+        Map<Integer, Integer> dp = new HashMap<>();
+        //dp中的因子，与之对应的前一个转换来的因子
+        Map<Integer, Integer> pre = new HashMap<>();
+        Arrays.sort(nums);
+        for (int num : nums) {
+            dp.put(num, 1);//1 是任何数的因子
+            pre.put(num, 0);
+        }
+
+        for (int num : nums) {
+            //获取num的因子集合
+            List<Integer> factorList = getFactorList(num);
+
+            for (Integer factor : factorList) {
+                if (!dp.containsKey(factor)) {
+                    continue;//检查因子是否存在于nums数组中
+                }
+                int tmp = dp.get(factor) + 1;
+                if (tmp > dp.get(num)) {//dp[i] = Max(dp[0~i-1]) + 1
+                    dp.put(num, tmp);
+                    pre.put(num, factor);
+                }
+            }
+        }
+
+        int maxsize = 0;
+        int maxnum = 0;
+        for (Map.Entry<Integer, Integer> dpEntry : dp.entrySet()) {
+            int num = dpEntry.getKey();
+            int size = dpEntry.getValue();
+            if (size > maxsize) {
+                maxsize = size;
+                maxnum = num;
+            }
+        }
+
+        Deque<Integer> result = new LinkedList<>();
+//        result.push(maxnum);
+        // System.out.println(maxnum);
+        int preNum = maxnum;
+        while (preNum != 0) {
+            result.push(preNum);//从头部推入
+            preNum = pre.get(preNum);
+        }
+
+        return new ArrayList<>(result);
+    }
+
+    private List<Integer> getFactorList(int num) {
+        List<Integer> result = new ArrayList<>();
+        if (num == 1) {
+            return result;
+        }
+        result.add(1);
+        for (int i = 2; i * i < num; i++) {
+            if (num % i != 0) {
+                continue;//num 对 i 取余不为0 则不可能成为整除的因子
+            }
+            result.add(i);
+            if (num / i != i) {
+                result.add(num / i);
+            }
+        }
+        return result;
+    }
 //    CountDownLatch
+
     /**
      * 模仿用户获取序列号方法 往队列中放入数据
      *
@@ -34,7 +153,7 @@ public class MultiThread extends Thread{
      */
     public void ImitateUser(String user) throws InterruptedException {
         queue.put(user);
-        Map<String,Integer> ass = new HashMap<>();
+        Map<String, Integer> ass = new HashMap<>();
 //        ass.c
 
         System.out.println(Thread.currentThread().getName()+"线程添加节点："+user+"，队列中共有"+queue.size()+"条数据,当前线程状态为:"+Thread.currentThread().getState());
@@ -50,36 +169,5 @@ public class MultiThread extends Thread{
         };
     }
 
-    /**
-     * 模仿构造器方法
-     */
-    public MultiThread() {
-        //region 初始化线程池
-        this.executorService = Executors.newFixedThreadPool(1);
-        //endregion
-
-        //region 初始化单线程池
-        this.singleScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        //endregion
-
-        this.queue = Queues.newLinkedBlockingQueue(3);
-        System.out.println("===连接zk");
-
-        //region 单线程间隔一段时间执行一次 删除zk所有节点
-        this.singleScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                for (int j =0 ;!MultiThread.this.queue.isEmpty();j++) {
-                    System.out.println("删除前队列节点数量为："+MultiThread.this.queue.size());
-                    System.out.println(Thread.currentThread().getName()+"循环第"+j+"次"+ new Date());
-                    MultiThread.this.executorService.submit(MultiThread.this.ImitateDeleteNode());
-                }
-            }
-        }, 10, 3, TimeUnit.SECONDS);
-        //endregion
-
-        System.out.println("===结束连接zk");
-
-    }
 
 }

@@ -21,6 +21,8 @@ public class SentenceSpout extends BaseRichSpout {
 
     private int index = 0;
 
+
+
     @Override
     public void open(Map<String, Object> map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         this.spoutOutputCollector = spoutOutputCollector;

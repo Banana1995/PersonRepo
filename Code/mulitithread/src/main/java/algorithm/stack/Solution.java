@@ -1,7 +1,5 @@
 package algorithm.stack;
 
-import algorithm.AlgorithmUtil;
-
 import java.util.*;
 
 public class Solution {
@@ -113,14 +111,104 @@ public class Solution {
         return sTemp.charAt(k - 1);
     }
 
+    public class TreeNode {
+        public int val;
+        public TreeNode left, right;
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+    }
+
+    private String split = ",";
+    private String emptyNode = "#";
+
+    public int findKthLargest(int[] nums, int k) {
+        int l = 0;
+        int r = nums.length - 1;
+        int target = nums.length - k;
+        partition(nums, l, r);
+//        while (true) {
+//            int index =
+//            if (index == target) {
+//                return nums[index];
+//            } else if (index < target) {
+//                l = index + 1;
+//            } else {
+//                r = index - 1;
+//            }
+//        }
+//        partition(nums,0,nums.length-1);
+        return 1;
+    }
+
+    private int partition(int[] nums, int l, int r) {
+        int pivotIndex = (l + r) / 2;
+        swap(nums, l, pivotIndex);
+        int pivot = nums[l];
+        int left = l;
+        int right = r + 1;
+        while (left < right) {
+            while (nums[++left] < pivot) {
+                if (left == r) break;//[l,left] < pivot
+            }
+            while (nums[--right] > pivot) {
+                if (right == l) break;//[right,r] > pivot
+            }
+            if (left < right) {
+                swap(nums, left, right);
+            }
+        }
+        //将pivot换到right下标位置
+        swap(nums, l, right);
+        return right;
+    }
+
+    private void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+
+//    private void partition(int[] nums, int l, int r) {
+//        if (l==r){
+//            return;
+//        }
+//        int left = l;
+//        int right = r;
+//        int pivot = nums[(left + right) / 2];
+//        while (left <= right) {
+//            while (left <= right && nums[left] < pivot) {
+//                //保证[l,left-1] < pivot
+//                left++;
+//            }
+//            while (left <= right && nums[right] > pivot) {
+//                //保证[right+1,r] > pivot
+//                right--;
+//            }
+//            if (left <= right) {
+//                int temp = nums[left];
+//                nums[left] = nums[right];
+//                nums[right] = temp;
+//                left++;
+//                right--;
+//            }
+//        }
+////        if (left == nums.length) {
+////            return right;
+////        }
+////        if (right == -1) {
+////            return left;
+////        }
+////        return nums[left] == pivot ? left : right;
+//        partition(nums,l,right);
+//        partition(nums,left,r);
+//    }
 
     public static void main(String[] args) {
-        Solution s = new Solution();
-        char res = s.findKthBit(2,3);
-        System.out.println(res);
-        boolean kthPositive2 = s.canConvertString("aab", "bbb", 27);
-        System.out.println(kthPositive2);
-        boolean kthPositive3 = s.canConvertString("qsxkjbfz", "xyfirptk", 73);
-        System.out.println(kthPositive3);
+        int[] data = new int[]{3, 2, 1, 5, 6, 4};
+        Solution so = new Solution();
+        so.findKthLargest(data, 2);
     }
 }

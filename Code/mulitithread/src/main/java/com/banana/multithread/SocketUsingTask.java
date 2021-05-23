@@ -15,8 +15,12 @@ public abstract class SocketUsingTask<T> implements CancellableTask<T> {
         try {
             if (socket != null) {
                 socket.close();
+
+                Class.forName(String.valueOf(SocketUsingTask.class));
+
+
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
