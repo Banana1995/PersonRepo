@@ -34,6 +34,6 @@ public class ControllableConcurrency {
           System.out.println(s);
         }).then();
   }
-// TODO: 2021/6/30 q1：
+// TODO: 2021/6/30 q1：为什么这样可以控制并发？q2:直接用merge为什么不可以控制并发？
 
 }
