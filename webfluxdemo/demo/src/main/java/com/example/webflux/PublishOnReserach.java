@@ -26,7 +26,9 @@ public class PublishOnReserach {
         sink.complete();
       }
       return list;
-    }).publishOn(Schedulers.boundedElastic(), 2)
+    })
+        .flatMap(s -> Flux.just(s + "11", s + "22", s + "33"))
+        .publishOn(Schedulers.boundedElastic(), 2)
         .map(x -> String.format("[%s]  %s", Thread.currentThread().getName(), x))
 
         .subscribe(System.out::println);
