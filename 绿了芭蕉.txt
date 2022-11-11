@@ -6,7 +6,7 @@
  * 英文换行 word-break:break-all;
  */
 #nice {
-    font-family: Optima-Regular, Optima, PingFangSC-light, PingFangTC-light, "PingFang SC", Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-family: Optima-Regular serifs ;
     padding: 10px;
     font-size: 15px;
     color: #353535;
