@@ -27,15 +27,16 @@
    * 首行缩进 text-indent:2em;
    */
 #nice p {
-    font-size: 15px;
+    font-size: 16px;
     color: #353535;
-    letter-spacing:0.5px;
+    letter-spacing:4px;
+    word-spacing:4px;
     text-align:justify;
     margin-left:6px;
     margin-right:6px;
-    margin-top:11px;
-    margin-bottom:11px;
-    line-height:25px;
+    margin-top:5px;
+    margin-bottom:5px;
+    line-height:26px;
 }
 
 /* 一级标题 */
@@ -138,18 +139,7 @@
     padding: 15px 10px;
     line-height: 1.75;
     border-radius: 13px;
-    color: #353535;
     background: #f5f5f5;
-}
-
-#nice .multiquote-1:before {
-    content: "“";
-    display: block;
-    font-size: 2em;
-    color: #ae506b;
-    font-family: Arial, serif;
-    line-height: 1em;
-    font-weight: 700;
 }
 
 /* 引用文字 */
@@ -160,18 +150,6 @@
     display: block;
 }
 
-/* 二级引用
- */
-#nice .multiquote-2 {
-	color: #353535;
-    background: #f5f5f5;
-}
-
-/* 二级引用文字 */
-#nice .multiquote-2 p {
-	color: #353535;
-    font-size: 16px;
-}
 
 
 /* 链接 
