@@ -177,7 +177,7 @@
 /* 删除线 */
 #nice del {}
 
-/* 分隔线
+/* 分割线
    * 粗细、样式和颜色
    * border-top:1px solid #ae506b;
    */
@@ -187,7 +187,7 @@
     border: none;
     border-top: medium solidid #ae506b;
     text-align: center;
-    background-image: linear-gradient(to right,rgba(53, 179, 120, 0), rgba(53, 179, 120,0.75), rgba(53, 179, 120, 0));
+    background-image: linear-gradient(to right,rgba(248, 57, 41, 0), rgba(248, 57, 41, 0.75), rgba(248, 57, 41, 0));
 }
 
 /* 图片
